@@ -2,7 +2,7 @@
 
 An open source solution for our dear community of TM practicants and ecosystem.
 
-This uses the classic three-tier architecture:
+It uses the classic three-tier architecture:
 
 ```
 ╭──────────────────╮      ╭──────────────────╮        ╭──────────────────╮
@@ -13,5 +13,6 @@ This uses the classic three-tier architecture:
 
 with:
 
--   Web UI (to be) implemented as a React.js SPA
--   Back-end implemented as a Rust based REST API service.
+-   Web UI (to be) implemented as a React.js SPA.
+-   Back-end ([tmc-svc](./tmc-svc/readme.md)) implemented as a Rust based REST API service.
+-   Database as PostgreSQL.

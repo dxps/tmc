@@ -1,7 +1,7 @@
 ## Business Flows
 
-![](./usecase_1.png)
+![](./use_case_1.png)
 
 <br/>
 
-![](./usecase_2.png)
+![](./use_case_2.png)

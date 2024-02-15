@@ -31,22 +31,39 @@ autonumber "<font color=gray>## "
 
 title
 <font color="gray" size=10>Use Case 2
-<font size=12>Un user își prezintă interesul
+<font size=12>Management și Subscriere la Evenimente
 <font size=9 color="gray">2024-02-15</font>
 
 
 end title
 
-participant "User interesat\n<font size=9 color=gray>human" as ui
+
 participant "Instructor\n<font size=9 color=gray>human" as i
+participant "User interesat\n<font size=9 color=gray>human" as ui
 participant "TMC\n<font size=9 color=gray>solution" as tmc
 
 ||10|
 
-ui -> tmc: Completează formularul de interes\n<font size=11 color=gray>nume, prenume, telefon, email, consent GDPR, orașul (reședință)
+i -> tmc: Adaugă eveniment\n<font size=11 color=gray>ex: curs ”Intro”
+
+tmc -> tmc:Conținut eveniment:\n- Data și ora desfășurării\n- Detalii acces\n    <font color=gray>(online sau fizic(ex: adresa))\n- Descriere
+
+tmc -> tmc:Evenimentul apare pe site\n<font color=gray>(fără detaliile de acces)</font>
+
 ||8|
-tmc -> ui: Email\n<font size=11 color=gray>Date despre următorul "Intro" (data, link acces) și informații despre următorul curs TM (planificat post "Intro")
+
+====
+
+||10|
+ui -> tmc: Prezintă interesul să participe la eveniment\n<font color=gray>completeză un formular de interes/participare
+
+||10|
+tmc -> ui: Email cu datele de conectare
 
 ||20|
+
+footer
+
+end footer
 
 @enduml
