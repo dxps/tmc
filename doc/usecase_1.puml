@@ -1,0 +1,65 @@
+@startuml ""
+skinparam dpi 150
+skinparam ArrowFontColor #4d4dff
+skinparam ArrowThickness 0.6
+skinparam Shadowing false
+skinparam RoundCorner 10
+skinparam BoxPadding 10
+skinparam TitleFontStyle regular
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 13
+skinparam NoteBackgroundColor #F1F1F1
+skinparam NoteBorderThickness 0
+skinparam NoteFontColor #2a2a2a
+skinparam NoteFontSize 10
+skinparam PartitionBorderThickness 1
+skinparam PartitionBorderColor #cccccc
+skinparam SequenceBoxBorderColor #ccc
+skinparam SequenceGroupBorderThickness 1
+skinparam SequenceGroupBorderColor #aaa
+skinparam SequenceGroupHeaderFontStyle normal
+skinparam SequenceGroupHeaderFontSize 11
+skinparam sequenceLifeLineBorderColor #ccc
+skinparam sequenceParticipantBackgroundColor #eee
+skinparam sequenceParticipantBorderColor #eee
+skinparam sequenceParticipantBorderThickness 4
+skinparam sequenceParticipantPadding 20
+skinparam sequence {
+  ArrowColor #666666
+}
+autonumber "<font color=gray>## "
+
+title
+<font color="gray" size=10>Use Case 1
+<font size=12>Management și Subscriere la Evenimente
+<font size=9 color="gray">2024-02-15</font>
+
+
+end title
+
+
+participant "Instructor\n<font size=9 color=gray>human" as i
+participant "User interesat\n<font size=9 color=gray>human" as ui
+participant "TMC\n<font size=9 color=gray>solution" as tmc
+
+||10|
+
+i -> tmc: Adaugă eveniment\n<font size=11 color=gray>ex: curs ”Intro”
+
+tmc -> tmc:Conținut eveniment:\n1. Data și ora desfășurării\n2. Date acces <font color=gray>(online sau fizic; adresa, dacă e fizic)\n3. Descriere
+
+tmc -> tmc:Evenimentul apare pe site <font color=gray>(fără date de acces)</font>
+
+||8|
+
+====
+
+||10|
+ui -> tmc: Prezintă interesul să participe la eveniment\n<font color=gray>completeză un formular (cel de la use case 2)
+
+||10|
+tmc -> ui: Email cu datele de conectare
+
+||20|
+
+@enduml
