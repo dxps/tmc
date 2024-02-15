@@ -1,0 +1,9 @@
+database:
+  host: "localhost"
+  port: 5442
+  username: "tmc"
+  password: "tmc"
+  name: "tmc"
+
+http:
+  port: 8080

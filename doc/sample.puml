@@ -1,0 +1,52 @@
+@startuml ""
+skinparam dpi 150
+skinparam ArrowFontColor #4d4dff
+skinparam ArrowThickness 0.6
+skinparam Shadowing false
+skinparam RoundCorner 10
+skinparam BoxPadding 10
+skinparam TitleFontStyle regular
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 13
+skinparam NoteBackgroundColor #F1F1F1
+skinparam NoteBorderThickness 0
+skinparam NoteFontColor #2a2a2a
+skinparam NoteFontSize 10
+skinparam PartitionBorderThickness 1
+skinparam PartitionBorderColor #cccccc
+skinparam SequenceBoxBorderColor #ccc
+skinparam SequenceGroupBorderThickness 1
+skinparam SequenceGroupBorderColor #aaa
+skinparam SequenceGroupHeaderFontStyle normal
+skinparam SequenceGroupHeaderFontSize 11
+skinparam sequenceLifeLineBorderColor #ccc
+skinparam sequenceParticipantBackgroundColor #eee
+skinparam sequenceParticipantBorderColor #eee
+skinparam sequenceParticipantBorderThickness 4
+skinparam sequenceParticipantPadding 20
+skinparam sequence {
+  ArrowColor #666666
+}
+autonumber "<font color=gray>## "
+
+title
+<font color="gray" size=10>Use Case 2
+<font size=12>Un user îți prezintă interesul
+<font size=9 color="gray">2024-02-15</font>
+
+
+end title
+
+participant "User interesat\n<font size=9 color=gray>human" as ui
+participant "Instructor\n<font size=9 color=gray>human" as i
+participant "TMC\n<font size=9 color=gray>solution" as tmc
+
+||10|
+
+ui -> tmc: Completează formularul de interes\n<font size=11 color=gray>nume, prenume, telefon, email, consent GDPR, orașul (reședință)
+||8|
+tmc -> ui: Email\n<font size=11 color=gray>Date despre următorul "Intro" (data, link acces) și informații despre următorul curs TM (planificat post "Intro")
+
+||20|
+
+@enduml
