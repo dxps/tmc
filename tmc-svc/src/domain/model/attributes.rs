@@ -1,11 +1,12 @@
-use super::{create_id, datatype::DataType};
 use chrono::{DateTime, NaiveDate, Utc};
 
+use crate::domain::model::{create_id, DataType};
+
 pub trait Attribute {
-    fn get_type(&self) -> DataType;
+    fn get_datatype(&self) -> DataType;
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct AttributeDefinition {
     pub id: String,
     pub name: String,
@@ -44,7 +45,7 @@ impl TextAttribute {
 }
 
 impl Attribute for TextAttribute {
-    fn get_type(&self) -> DataType {
+    fn get_datatype(&self) -> DataType {
         DataType::Text
     }
 }
@@ -57,7 +58,7 @@ pub struct IntegerAttribute {
 }
 
 impl Attribute for IntegerAttribute {
-    fn get_type(&self) -> DataType {
+    fn get_datatype(&self) -> DataType {
         DataType::Integer
     }
 }
@@ -70,7 +71,7 @@ pub struct DateAttribute {
 }
 
 impl Attribute for DateAttribute {
-    fn get_type(&self) -> DataType {
+    fn get_datatype(&self) -> DataType {
         DataType::Date
     }
 }
@@ -83,7 +84,7 @@ pub struct DateTimeAttribute {
 }
 
 impl Attribute for DateTimeAttribute {
-    fn get_type(&self) -> DataType {
+    fn get_datatype(&self) -> DataType {
         DataType::DateTime
     }
 }
@@ -95,7 +96,7 @@ pub struct EmailAttribute {
 }
 
 impl Attribute for EmailAttribute {
-    fn get_type(&self) -> DataType {
+    fn get_datatype(&self) -> DataType {
         DataType::Email
     }
 }
@@ -113,6 +114,6 @@ mod tests {
         let attr_def = AttributeDefinition::new_text(name.into(), None);
         let attr = TextAttribute::new(attr_def.name, "some text value".into(), attr_def.id);
         assert_eq!(name, attr.name);
-        assert_eq!(DataType::Text, attr.get_type())
+        assert_eq!(DataType::Text, attr.get_datatype())
     }
 }
