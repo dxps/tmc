@@ -17,11 +17,15 @@ Run `./ops/db_init.sh` script that:
 
 ### Development
 
+#### Run in "dev mode"
+
 Use `./run_dev_watch.sh` to start the server and have it automatically restarted on detected code changes.
+
+#### Database Model Changes
 
 When database model (DDL related) changes need to be added:
 
 1. Run `./ops/db_add_change.sh {change-name}`\
-   (such as `./ops/db_add_change create_table_access_classifiers`).
+   (such as `./ops/db_add_change.sh create_table_access_classifiers`).
 2. Populate the content of the generated sql file.
 3. Run `./ops/db_apply_changes.sh` to apply the change.

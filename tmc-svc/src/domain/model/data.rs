@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 #[derive(Debug, PartialEq)]
 pub enum DataType {
     Text,
@@ -16,6 +18,21 @@ impl From<String> for DataType {
             "datetime" => Self::DateTime,
             "email" => Self::Email,
             _ => DataType::Text,
+        }
+    }
+}
+
+impl Serialize for DataType {
+    fn serialize<S>(&self, ser: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            DataType::Text => ser.serialize_str("text"),
+            DataType::Integer => ser.serialize_str("integer"),
+            DataType::Date => ser.serialize_str("date"),
+            DataType::DateTime => ser.serialize_str("datetime"),
+            DataType::Email => ser.serialize_str("email"),
         }
     }
 }

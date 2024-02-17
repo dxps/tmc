@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[derive(Clone)]
-struct AttributeDefinitionsRepo {
+pub struct AttributeDefinitionsRepo {
     dbcp: Arc<DbConnPool>,
 }
 

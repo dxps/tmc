@@ -1,4 +1,5 @@
 use chrono::{DateTime, NaiveDate, Utc};
+use serde::Serialize;
 
 use crate::domain::model::{create_id, DataType};
 
@@ -6,7 +7,7 @@ pub trait Attribute {
     fn get_datatype(&self) -> DataType;
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct AttributeDefinition {
     pub id: String,
     pub name: String,
