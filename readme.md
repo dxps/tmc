@@ -11,8 +11,14 @@ It uses the classic three-tier architecture:
 ╰──────────────────╯      ╰──────────────────╯        ╰──────────────────╯
 ```
 
-with:
+with the following components (and their stack):
 
--   Web UI (to be) implemented as a React.js SPA.
--   Back-end ([tmc-svc](./tmc-svc/readme.md)) implemented as a Rust based REST API service.
+-   Web UI
+    -   Implemented as a React.js SPA
+    -   This is future planned.
+-   Back-end ([tmc-svc](./tmc-svc/readme.md))
+    -   Implemented as a Rust based REST API service.
+    -   Using Axum as web server.
+    -   Server-side rendered UI using Askama.
+    -   sqlx for an easy database interactions, incl migration.
 -   Database as PostgreSQL.
