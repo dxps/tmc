@@ -15,10 +15,12 @@ with the following components (and their stack):
 
 -   Web UI
     -   Implemented as a React.js SPA
-    -   This is future planned.
+    -   Considered in the future.
 -   Back-end ([tmc-svc](./tmc-svc/readme.md))
     -   Implemented as a Rust based REST API service.
     -   Using Axum as web server.
-    -   Server-side rendered UI using Askama.
-    -   sqlx for an easy database interactions, incl migration.
--   Database as PostgreSQL.
+    -   Server-side rendered UI using Askama or Leptos
+        (_to be evaluated and decided_).
+    -   sqlx for an easier database interactions, incl db migrations.
+-   Database
+    -   Using PostgreSQL.
