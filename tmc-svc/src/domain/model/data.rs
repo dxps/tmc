@@ -1,5 +1,7 @@
 use serde::Serialize;
 
+use super::create_id;
+
 #[derive(Debug, PartialEq)]
 pub enum DataType {
     Text,
@@ -41,4 +43,29 @@ impl Serialize for DataType {
 pub enum DataValidation {
     TextLengthMin(u8),
     TextLengthMinMax(u8, u8),
+}
+
+pub trait DataItem {
+    fn get_datatype(&self) -> DataType;
+}
+
+/// The definition of a data item.
+/// Data item is a basic / foundation element that stores some data.
+#[derive(Debug, PartialEq, Serialize)]
+pub struct DataItemDef {
+    pub id: String,
+    pub name: String,
+    pub description: Option<String>,
+    pub data_type: DataType,
+}
+
+impl DataItemDef {
+    pub fn new_text(name: String, description: Option<String>) -> Self {
+        Self {
+            id: create_id(),
+            name,
+            description,
+            data_type: DataType::Text,
+        }
+    }
 }

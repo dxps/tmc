@@ -1,6 +1,4 @@
-use crate::{
-    app::db::DbConnPool, domain::logic::AttributeDefinitionsMgr, repos::AttributeDefinitionsRepo,
-};
+use crate::{app::db::DbConnPool, domain::logic::DataItemDefsMgr, repos::DataItemDefsRepo};
 use axum::extract::FromRef;
 use std::sync::Arc;
 
@@ -8,7 +6,7 @@ use std::sync::Arc;
 #[derive(Clone, FromRef)]
 pub struct AppState {
     pub dbcp: Arc<DbConnPool>,
-    pub attr_defs_mgr: AttributeDefinitionsMgr,
+    pub data_item_defs_mgr: DataItemDefsMgr,
 }
 
 impl AppState {
@@ -16,13 +14,13 @@ impl AppState {
     pub fn new(dbcp: DbConnPool) -> Self {
         //
         let dbcp = Arc::new(dbcp);
-        let attr_defs_repo = Arc::new(AttributeDefinitionsRepo::new(dbcp.clone()));
 
-        let attr_defs_mgr = AttributeDefinitionsMgr::new(attr_defs_repo.clone());
+        let attr_defs_repo = Arc::new(DataItemDefsRepo::new(dbcp.clone()));
+        let data_item_defs_mgr = DataItemDefsMgr::new(attr_defs_repo.clone());
 
         Self {
             dbcp,
-            attr_defs_mgr,
+            data_item_defs_mgr,
         }
     }
 }

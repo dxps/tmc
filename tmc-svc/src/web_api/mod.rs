@@ -4,8 +4,8 @@ pub use routes::*;
 mod healthcheck;
 pub use healthcheck::*;
 
-mod attr_defs;
-pub use attr_defs::*;
+mod data_item_defs;
+pub use data_item_defs::*;
 
 mod responses;
 pub use responses::*;

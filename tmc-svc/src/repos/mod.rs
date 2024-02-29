@@ -1,2 +1,2 @@
-mod attr_def_repo;
-pub use attr_def_repo::*;
+mod data_item_defs_repo;
+pub use data_item_defs_repo::*;

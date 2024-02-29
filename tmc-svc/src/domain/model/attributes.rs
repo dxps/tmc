@@ -1,30 +1,8 @@
 use chrono::{DateTime, NaiveDate, Utc};
-use serde::Serialize;
 
 use crate::domain::model::{create_id, DataType};
 
-pub trait Attribute {
-    fn get_datatype(&self) -> DataType;
-}
-
-#[derive(Debug, PartialEq, Serialize)]
-pub struct AttributeDefinition {
-    pub id: String,
-    pub name: String,
-    pub description: Option<String>,
-    pub data_type: DataType,
-}
-
-impl AttributeDefinition {
-    pub fn new_text(name: String, description: Option<String>) -> Self {
-        Self {
-            id: create_id(),
-            name,
-            description,
-            data_type: DataType::Text,
-        }
-    }
-}
+use super::DataItem;
 
 #[derive(Debug)]
 pub struct TextAttribute {
@@ -45,7 +23,7 @@ impl TextAttribute {
     }
 }
 
-impl Attribute for TextAttribute {
+impl DataItem for TextAttribute {
     fn get_datatype(&self) -> DataType {
         DataType::Text
     }
@@ -58,7 +36,7 @@ pub struct IntegerAttribute {
     pub def_id: String,
 }
 
-impl Attribute for IntegerAttribute {
+impl DataItem for IntegerAttribute {
     fn get_datatype(&self) -> DataType {
         DataType::Integer
     }
@@ -71,7 +49,7 @@ pub struct DateAttribute {
     pub def_id: String,
 }
 
-impl Attribute for DateAttribute {
+impl DataItem for DateAttribute {
     fn get_datatype(&self) -> DataType {
         DataType::Date
     }
@@ -84,7 +62,7 @@ pub struct DateTimeAttribute {
     pub def_id: String,
 }
 
-impl Attribute for DateTimeAttribute {
+impl DataItem for DateTimeAttribute {
     fn get_datatype(&self) -> DataType {
         DataType::DateTime
     }
@@ -96,7 +74,7 @@ pub struct EmailAttribute {
     pub def_id: String,
 }
 
-impl Attribute for EmailAttribute {
+impl DataItem for EmailAttribute {
     fn get_datatype(&self) -> DataType {
         DataType::Email
     }
@@ -104,15 +82,15 @@ impl Attribute for EmailAttribute {
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::model::{Attribute, DataType};
+    use crate::domain::model::{DataItem, DataItemDef, DataType};
 
-    use super::{AttributeDefinition, TextAttribute};
+    use super::TextAttribute;
 
     #[test]
     fn text_attribute_simple_check() {
         //
         let name = "First name";
-        let attr_def = AttributeDefinition::new_text(name.into(), None);
+        let attr_def = DataItemDef::new_text(name.into(), None);
         let attr = TextAttribute::new(attr_def.name, "some text value".into(), attr_def.id);
         assert_eq!(name, attr.name);
         assert_eq!(DataType::Text, attr.get_datatype())
