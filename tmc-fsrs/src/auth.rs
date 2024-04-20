@@ -1,20 +1,9 @@
 use async_trait::async_trait;
-use axum::{
-    http::Method,
-    response::{IntoResponse, Response},
-    routing::get,
-    Router,
-};
-use axum_session::{SessionConfig, SessionLayer, SessionPgPool, SessionStore};
+use axum::response::{IntoResponse, Response};
 use axum_session_auth::*;
-use core::pin::Pin;
-use dioxus_fullstack::prelude::*;
 use serde::{Deserialize, Serialize};
-use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
-use std::error::Error;
-use std::future::Future;
-use std::{collections::HashSet, net::SocketAddr, str::FromStr};
+use std::collections::HashSet;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
@@ -181,14 +170,6 @@ impl SqlUser {
             },
         }
     }
-}
-
-pub async fn connect_to_pbdb() -> Result<PgPool, sqlx::Error> {
-    let pool = PgPoolOptions::new()
-        .max_connections(3)
-        .connect("postgres://tmc:tmc@localhost:5442/tmc")
-        .await?;
-    Ok(pool)
 }
 
 pub struct Session(

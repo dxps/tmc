@@ -18,7 +18,7 @@ fn main() {
     dioxus_web::launch::launch_cfg(ui::App, dioxus_web::Config::new().hydrate(true));
 
     #[cfg(feature = "server")]
-    server::server_start(ui::App)
+    server::start(ui::App)
 }
 
 #[component]

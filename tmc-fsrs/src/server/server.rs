@@ -1,9 +1,10 @@
+#[cfg(feature = "server")]
 use dioxus::dioxus_core::Element;
 
 #[cfg(feature = "server")]
-pub fn server_start(app_fn: fn() -> Element) {
+pub fn start(app_fn: fn() -> Element) {
     //
-    use crate::auth::*;
+    use crate::{auth::*, server::connect_to_pbdb};
 
     use axum::routing::*;
     use axum_session::{SessionConfig, SessionPgPool, SessionStore};

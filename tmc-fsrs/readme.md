@@ -15,3 +15,5 @@
 ### Run
 
 Launch the Dioxus Fullstack app using `dx serve --platform fullstack` or use `./run-dev.sh` provided script.
+
+In case of compilation error that remain hidden behind Dioxus CLI, run `cargo check --features server,web` to reveal them.
