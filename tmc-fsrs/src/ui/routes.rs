@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::ui::pages::{Blog, Home};
+use crate::ui::pages::{Blog, Home, Sample};
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum Route {
@@ -9,4 +9,7 @@ pub enum Route {
 
     #[route("/blog/:id")]
     Blog { id: i32 },
+
+    #[route("/sample")]
+    Sample {},
 }

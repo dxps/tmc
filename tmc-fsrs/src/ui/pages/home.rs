@@ -58,7 +58,10 @@ pub fn Home() -> Element {
                         }
                     }
                 }
+                br {}
                 Link { to: Route::Blog { id: 123 }, "Go to Blog" }
+                br {}
+                Link { to: Route::Sample {}, "Go to Sample" }
             }
         }
     }
