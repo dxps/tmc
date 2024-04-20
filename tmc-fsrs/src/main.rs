@@ -1,35 +1,24 @@
 #![allow(non_snake_case)]
 
-use dioxus::prelude::*;
-use log::LevelFilter;
+#[cfg(feature = "server")]
+mod auth;
+mod server;
 
-#[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
-enum Route {
-    #[route("/")]
-    Home {},
-    #[route("/blog/:id")]
-    Blog { id: i32 },
-}
+mod ui;
+
+use dioxus::prelude::*;
+
+use crate::ui::Route;
 
 fn main() {
-    // Init debug
-    dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");
+    //
+    //launch(App);
+    #[cfg(feature = "web")]
+    // Hydrate the application on the client.
+    dioxus_web::launch::launch_cfg(ui::App, dioxus_web::Config::new().hydrate(true));
 
-    launch(App);
-}
-
-fn App() -> Element {
-    rsx! {
-        Router::<Route> {}
-    }
-}
-
-#[component]
-fn Blog(id: i32) -> Element {
-    rsx! {
-        Link { to: Route::Home {}, "Go to counter" }
-        "Blog post {id}"
-    }
+    #[cfg(feature = "server")]
+    server::server_start(ui::App)
 }
 
 #[component]
@@ -42,7 +31,7 @@ fn Home() -> Element {
             to: Route::Blog {
                 id: count()
             },
-            "Go to blog"
+            "Go to Blog"
         }
         div { class: "",
             h1 { "High-Five counter: {count}" }
@@ -51,7 +40,7 @@ fn Home() -> Element {
             button { class: "bg-slate-100 rounded-lg m-2 px-2 py-1",
                 onclick: move |_| async move {
                     if let Ok(data) = get_server_data().await {
-                        log::info!("Client received: {}", data);
+                        println!("Client received: {}", data);
                         text.set(data.clone());
                         post_server_data(data).await.unwrap();
                     }
