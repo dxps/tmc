@@ -28,11 +28,14 @@ title = "TM Community"
 [web.watcher]
 #-----------#
 
-# when watcher trigger, regenerate the `index.html`
+# When `dx serve`, it redirects all missing routes to the index.
+index_on_404 = true
+
+# When watcher trigger, regenerate the `index.html`.
 reload_html = true
 
-# which files or dirs will be watcher monitoring
-watch_path = ["src", "assets"]
+# Which files or dirs will be watcher monitoring.
+watch_path = [ "src", "assets" ]
 
 
 # include `assets` in web platform
@@ -41,7 +44,7 @@ watch_path = ["src", "assets"]
 #------------#
 
 # CSS style file
-style = ["tailwind.css"]
+style = [ "/tailwind.css" ]
 
 # Javascript code file
 script = []

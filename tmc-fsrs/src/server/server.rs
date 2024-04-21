@@ -19,12 +19,11 @@ pub fn start(app_fn: fn() -> Element) {
             println!("Connecting to the database ...");
             let pg_pool = connect_to_pbdb().await;
             if pg_pool.is_err() {
-                eprintln!("Failed to connect to database! Exiting now.");
+                log::error!("Failed to connect to database! Exiting now.");
                 return;
             }
             let pg_pool = pg_pool.unwrap();
-            println!("Connected to the database.");
-            dbg!(&pg_pool);
+            log::info!("Connected to the database.");
 
             // This defaults as normal cookies.
             let session_config = SessionConfig::default().with_table_name("users_sessions");
@@ -74,7 +73,7 @@ fn init_logging() {
         .with_module_level("tokio_tungstenite", LevelFilter::Info)
         .with_module_level("axum_session", LevelFilter::Info)
         .with_module_level("axum_session_auth", LevelFilter::Error)
-        .with_module_level("dioxus_core", LevelFilter::Info)
+        .with_module_level("dioxus_core", LevelFilter::Warn)
         .with_module_level("dioxus_signals", LevelFilter::Info)
         .with_module_level("tracing", LevelFilter::Warn)
         .init()

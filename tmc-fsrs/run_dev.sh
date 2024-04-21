@@ -1,4 +1,4 @@
 #!/bin/sh
 
-dx serve --platform fullstack
+dx serve --port 3003 --platform fullstack --hot-reload
 
