@@ -1,4 +1,4 @@
-use crate::server::functions::{get_permissions, get_user_name, login, logout};
+use crate::server::fns::auth::{get_permissions, get_user_name, login, logout};
 use crate::ui::routes::Route;
 
 use dioxus::prelude::*;
@@ -58,8 +58,8 @@ pub fn Home() -> Element {
                     }
                 }
                 div { class: "pt-8",
-                Link { class: "pr-6", to: Route::Blog { id: 123 }, "Go to Blog" }
-                Link { to: Route::Sample {}, "Go to Sample" }
+                    Link { class: "pr-10 hover:text-blue-600", to: Route::Blog { id: 123 }, "Go to Blog 123" }
+                    Link { to: Route::Sample {}, "Go to Sample" }
                 }
             }
         }

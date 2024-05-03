@@ -4,7 +4,6 @@ mod database;
 pub use database::*;
 
 pub mod fns;
-pub mod functions;
 
 #[cfg(feature = "server")]
 mod server;

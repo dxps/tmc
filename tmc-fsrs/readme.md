@@ -19,7 +19,7 @@ Note: These are needed during development. In other words, if you don't change a
 1. Install the `sqlx-cli` using `cargo install --version=0.7.4 sqlx-cli --no-default-features --features native-tls,postgres`.<br/>
    If the compilation fails due to missing `openssl.pc` file, then do `sudo apt install libssl-dev` and rerun `cargo install` it.
 2. Run `./ops/db_init.sh` that:
-    - Starts a PostgreSQL instance as a Docker container.
+    - Starts a PostgreSQL database instance as a Docker container.
     - Runs the database migrations within.
 
 <br/>

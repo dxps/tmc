@@ -35,6 +35,10 @@ pub fn start(app_fn: fn() -> Element) {
 
             User::create_user_tables(&pg_pool).await;
 
+            let p = vec!["one", "two"];
+            let path: String = p.iter().map(|elem| format!("/{}", *elem)).collect();
+            log::info!("path={}", path);
+
             // Build our application web api router.
             let web_api_router = Router::new()
                 // Server side render the application, serve static assets, and register server functions.
