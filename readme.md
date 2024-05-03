@@ -1,26 +1,28 @@
 ## TM Community
 
-An open source solution for our dear community of TM practicants and ecosystem.
+An open source solution for our community of TM practicants and the ecosystem around it.
 
-It uses the classic three-tier architecture:
+This solution is a Rust based web app using Dioxus Fullstack and its Server Functions.<br/>
+This makes the architecture a classic (three-tier) one:
 
 ```
 ╭──────────────────╮      ╭──────────────────╮        ╭──────────────────╮
 │      Web UI      │      │     Back-end     │        │     Database     │
-│     (tmc-ui)     ├──────▶    (tmc-svc)     ├────────▶   (postgresql)   │
+│    (tmc-fsrs)    ├──────▶    (tmc-fsrs)    ├────────▶   (postgresql)   │
 ╰──────────────────╯      ╰──────────────────╯        ╰──────────────────╯
 ```
 
-with the following components (and their stack):
+with the following benefits:
 
--   Web UI
-    -   Implemented as a React.js SPA
-    -   Considered in the future.
--   Back-end ([tmc-svc](./tmc-svc/readme.md))
-    -   Implemented as a Rust based REST API service.
-    -   Using Axum as web server.
-    -   Server-side rendered UI using Askama or Leptos
-        (_to be evaluated and decided_).
-    -   sqlx for an easier database interactions, incl db migrations.
--   Database
-    -   Using PostgreSQL.
+-   SSR (server side routing)
+    -   Being able to navigate to a specific route (as in "deep links").
+-   CSR (client side routing)
+    -   The view/page is rendered by the UI only, no need for a round trip to the back-end.
+    -   URL reflects the path while navigating through pages
+-   Using server functions that talk with the database.
+    -   A nice feature provided by Dioxus Fullstack that allowed faster development,<br/>
+        as there is no need to expose an API operation and then call it from UI.
+
+The implementation is in [tmc-fsrs](./tmc-fsrs/) directory.
+
+Old stuff (some previous iterations) are kept in [old](./old/) directory.
