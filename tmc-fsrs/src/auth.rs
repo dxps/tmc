@@ -176,7 +176,7 @@ pub struct Session(
     pub  axum_session_auth::AuthSession<
         crate::auth::User,
         i64,
-        axum_session_auth::SessionPgPool,
+        axum_session_auth::SessionAnyPool,
         sqlx::PgPool,
     >,
 );
@@ -185,7 +185,7 @@ impl std::ops::Deref for Session {
     type Target = axum_session_auth::AuthSession<
         crate::auth::User,
         i64,
-        axum_session_auth::SessionPgPool,
+        axum_session_auth::SessionAnyPool,
         sqlx::PgPool,
     >;
 
@@ -232,7 +232,7 @@ impl<S: std::marker::Sync + std::marker::Send> axum::extract::FromRequestParts<S
         axum_session_auth::AuthSession::<
             crate::auth::User,
             i64,
-            axum_session_auth::SessionPgPool,
+            axum_session_auth::SessionAnyPool,
             sqlx::PgPool,
         >::from_request_parts(parts, state)
         .await
