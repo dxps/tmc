@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use axum::response::{IntoResponse, Response};
-use axum_session::SessionAnyPool;
 use axum_session_auth::*;
+use axum_session_sqlx::SessionPgPool;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use std::collections::HashSet;
@@ -169,10 +169,10 @@ impl SqlUser {
     }
 }
 
-pub struct Session(pub axum_session_auth::AuthSession<crate::auth::User, i64, SessionAnyPool, sqlx::PgPool>);
+pub struct Session(pub axum_session_auth::AuthSession<crate::auth::User, i64, SessionPgPool, sqlx::PgPool>);
 
 impl std::ops::Deref for Session {
-    type Target = axum_session_auth::AuthSession<crate::auth::User, i64, SessionAnyPool, sqlx::PgPool>;
+    type Target = axum_session_auth::AuthSession<crate::auth::User, i64, SessionPgPool, sqlx::PgPool>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -211,7 +211,7 @@ impl<S: std::marker::Sync + std::marker::Send> axum::extract::FromRequestParts<S
     type Rejection = AuthSessionLayerNotFound;
 
     async fn from_request_parts(parts: &mut http::request::Parts, state: &S) -> Result<Self, Self::Rejection> {
-        axum_session_auth::AuthSession::<crate::auth::User, i64, SessionAnyPool, PgPool>::from_request_parts(
+        axum_session_auth::AuthSession::<crate::auth::User, i64, SessionPgPool, PgPool>::from_request_parts(
             parts, state,
         )
         .await

@@ -6,9 +6,9 @@ pub fn start(app_fn: fn() -> Element) {
     //
     use crate::{auth::User, server::connect_to_pbdb};
     use axum::routing::*;
-    use axum_session::{SessionAnyPool, SessionConfig, SessionLayer};
+    use axum_session::{SessionConfig, SessionLayer};
     use axum_session_auth::{AuthConfig, AuthSessionLayer};
-    use axum_session_sqlx::SessionPgSessionStore;
+    use axum_session_sqlx::{SessionPgPool, SessionPgSessionStore};
     use dioxus::prelude::*;
     use sqlx::PgPool;
 
@@ -38,7 +38,7 @@ pub fn start(app_fn: fn() -> Element) {
             // Server side render the application, serve static assets, and register server functions.
             .serve_dioxus_application(ServeConfig::builder().build(), move || VirtualDom::new(app_fn))
             .await
-            .layer(AuthSessionLayer::<User, i64, SessionAnyPool, PgPool>::new(Some(pg_pool)).with_config(auth_config))
+            .layer(AuthSessionLayer::<User, i64, SessionPgPool, PgPool>::new(Some(pg_pool)).with_config(auth_config))
             .layer(SessionLayer::new(session_store));
 
         // Start it.
