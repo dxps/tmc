@@ -1,5 +1,6 @@
 use async_trait::async_trait;
 use axum::response::{IntoResponse, Response};
+use axum_session::SessionAnyPool;
 use axum_session_auth::*;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
@@ -72,13 +73,12 @@ impl User {
             .ok()?;
 
         //lets just get all the tokens the user can use, we will only use the full permissions if modifing them.
-        let sql_user_perms = sqlx::query_as::<_, SqlPermissionTokens>(
-            "SELECT token FROM users_permissions WHERE user_id = $1;",
-        )
-        .bind(id)
-        .fetch_all(pool)
-        .await
-        .ok()?;
+        let sql_user_perms =
+            sqlx::query_as::<_, SqlPermissionTokens>("SELECT token FROM users_permissions WHERE user_id = $1;")
+                .bind(id)
+                .fetch_all(pool)
+                .await
+                .ok()?;
 
         Some(sqluser.into_user(Some(sql_user_perms)))
     }
@@ -161,10 +161,7 @@ impl SqlUser {
             anonymous: self.anonymous,
             username: self.username,
             permissions: if let Some(user_perms) = sql_user_perms {
-                user_perms
-                    .into_iter()
-                    .map(|x| x.token)
-                    .collect::<HashSet<String>>()
+                user_perms.into_iter().map(|x| x.token).collect::<HashSet<String>>()
             } else {
                 HashSet::<String>::new()
             },
@@ -172,22 +169,10 @@ impl SqlUser {
     }
 }
 
-pub struct Session(
-    pub  axum_session_auth::AuthSession<
-        crate::auth::User,
-        i64,
-        axum_session_auth::SessionPgPool,
-        sqlx::PgPool,
-    >,
-);
+pub struct Session(pub axum_session_auth::AuthSession<crate::auth::User, i64, SessionAnyPool, sqlx::PgPool>);
 
 impl std::ops::Deref for Session {
-    type Target = axum_session_auth::AuthSession<
-        crate::auth::User,
-        i64,
-        axum_session_auth::SessionPgPool,
-        sqlx::PgPool,
-    >;
+    type Target = axum_session_auth::AuthSession<crate::auth::User, i64, SessionAnyPool, sqlx::PgPool>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -225,16 +210,10 @@ impl IntoResponse for AuthSessionLayerNotFound {
 impl<S: std::marker::Sync + std::marker::Send> axum::extract::FromRequestParts<S> for Session {
     type Rejection = AuthSessionLayerNotFound;
 
-    async fn from_request_parts(
-        parts: &mut http::request::Parts,
-        state: &S,
-    ) -> Result<Self, Self::Rejection> {
-        axum_session_auth::AuthSession::<
-            crate::auth::User,
-            i64,
-            axum_session_auth::SessionPgPool,
-            sqlx::PgPool,
-        >::from_request_parts(parts, state)
+    async fn from_request_parts(parts: &mut http::request::Parts, state: &S) -> Result<Self, Self::Rejection> {
+        axum_session_auth::AuthSession::<crate::auth::User, i64, SessionAnyPool, PgPool>::from_request_parts(
+            parts, state,
+        )
         .await
         .map(Session)
         .map_err(|_| AuthSessionLayerNotFound)
