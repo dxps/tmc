@@ -1,7 +1,9 @@
 use dioxus::prelude::*;
 
-use crate::server::fns::sample::{get_server_data, post_server_data};
-use crate::ui::routes::Route;
+use crate::{
+    server::fns::sample::{get_server_data, post_server_data},
+    ui::routes::Route,
+};
 
 #[component]
 pub fn Sample() -> Element {

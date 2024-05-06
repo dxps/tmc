@@ -1,5 +1,7 @@
-use crate::server::fns::auth::{get_permissions, get_user_name, login, logout};
-use crate::ui::routes::Route;
+use crate::{
+    server::fns::auth::{get_permissions, get_user_name, login, logout},
+    ui::routes::Route,
+};
 
 use dioxus::prelude::*;
 

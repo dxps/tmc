@@ -169,10 +169,10 @@ impl SqlUser {
     }
 }
 
-pub struct Session(pub axum_session_auth::AuthSession<crate::auth::User, i64, SessionPgPool, sqlx::PgPool>);
+pub struct Session(pub axum_session_auth::AuthSession<User, i64, SessionPgPool, PgPool>);
 
 impl std::ops::Deref for Session {
-    type Target = axum_session_auth::AuthSession<crate::auth::User, i64, SessionPgPool, sqlx::PgPool>;
+    type Target = axum_session_auth::AuthSession<User, i64, SessionPgPool, PgPool>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -211,11 +211,9 @@ impl<S: std::marker::Sync + std::marker::Send> axum::extract::FromRequestParts<S
     type Rejection = AuthSessionLayerNotFound;
 
     async fn from_request_parts(parts: &mut http::request::Parts, state: &S) -> Result<Self, Self::Rejection> {
-        axum_session_auth::AuthSession::<crate::auth::User, i64, SessionPgPool, PgPool>::from_request_parts(
-            parts, state,
-        )
-        .await
-        .map(Session)
-        .map_err(|_| AuthSessionLayerNotFound)
+        axum_session_auth::AuthSession::<User, i64, SessionPgPool, PgPool>::from_request_parts(parts, state)
+            .await
+            .map(Session)
+            .map_err(|_| AuthSessionLayerNotFound)
     }
 }

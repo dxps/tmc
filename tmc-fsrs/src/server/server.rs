@@ -4,7 +4,7 @@ use dioxus::dioxus_core::Element;
 #[cfg(feature = "server")]
 pub fn start(app_fn: fn() -> Element) {
     //
-    use crate::{auth::User, server::connect_to_pbdb};
+    use crate::{auth::User, server::connect_to_pgdb};
     use axum::routing::*;
     use axum_session::{SessionConfig, SessionLayer};
     use axum_session_auth::{AuthConfig, AuthSessionLayer};
@@ -16,9 +16,12 @@ pub fn start(app_fn: fn() -> Element) {
 
     tokio::runtime::Runtime::new().unwrap().block_on(async move {
         println!("Connecting to the database ...");
-        let pg_pool = connect_to_pbdb().await;
+        let pg_pool = connect_to_pgdb().await;
         if pg_pool.is_err() {
-            log::error!("Failed to connect to database! Exiting now.");
+            log::error!(
+                "Failed to connect to database due to '{}'. Exiting now!",
+                pg_pool.unwrap_err()
+            );
             return;
         }
         let pg_pool = pg_pool.unwrap();
@@ -33,7 +36,6 @@ pub fn start(app_fn: fn() -> Element) {
 
         User::create_user_tables(&pg_pool).await;
 
-        // Build our application web api router.
         let web_api_router = Router::new()
             // Server side render the application, serve static assets, and register server functions.
             .serve_dioxus_application(ServeConfig::builder().build(), move || VirtualDom::new(app_fn))

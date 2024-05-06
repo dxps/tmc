@@ -13,8 +13,7 @@ pub enum Route {
     #[route("/sample")]
     Sample {},
 
-    // The catch all routes that will match any route
-    // and placing the matched segments in the route field.
+    // The catch all route, including the placement of the URL path segments in the route field.
     #[route("/:..route")]
     PageNotFound { route: Vec<String> },
 }
