@@ -1,6 +1,6 @@
 use crate::{
     server::fns::auth::{get_permissions, get_user_name, login, logout},
-    ui::{comps::Nav, routes::Route},
+    ui::routes::Route,
 };
 
 use dioxus::prelude::*;
@@ -12,7 +12,6 @@ pub fn Home() -> Element {
     rsx! {
         div {
             class: "flex flex-col min-h-screen bg-gray-100",
-            Nav {}
             div { class: "flex flex-col min-h-screen justify-center items-center drop-shadow-2xl",
                 div {
                     table { class: "bg-white rounded-md",
