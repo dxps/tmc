@@ -9,13 +9,16 @@ mod server;
 
 mod ui;
 
-fn main() {
-    #[cfg(feature = "web")]
-    // Hydrate the application on the client.
-    // dioxus_web::launch::launch_cfg(ui::App, dioxus_web::Config::new().hydrate(true));
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     //
-    launch(ui::App);
+    #[cfg(feature = "server")]
+    dotenvy::dotenv()?;
 
     #[cfg(feature = "server")]
-    server::start(ui::App)
+    server::start(ui::App);
+
+    #[cfg(feature = "web")]
+    launch(ui::App);
+
+    Ok(())
 }

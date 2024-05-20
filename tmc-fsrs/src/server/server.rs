@@ -53,17 +53,17 @@ pub fn start(app_fn: fn() -> Element) {
 
 #[cfg(feature = "server")]
 fn init_logging() {
-    use log::LevelFilter;
+    use log::LevelFilter::{Info, Warn};
 
     simple_logger::SimpleLogger::new()
-        .with_module_level("sqlx", LevelFilter::Info)
-        .with_module_level("tungstenite", LevelFilter::Info)
-        .with_module_level("tokio_tungstenite", LevelFilter::Info)
-        .with_module_level("axum_session", LevelFilter::Info)
-        .with_module_level("axum_session_auth", LevelFilter::Warn)
-        .with_module_level("dioxus_core", LevelFilter::Warn)
-        .with_module_level("dioxus_signals", LevelFilter::Info)
-        .with_module_level("tracing", LevelFilter::Warn)
+        .with_module_level("sqlx", Info)
+        .with_module_level("tungstenite", Info)
+        .with_module_level("tokio_tungstenite", Info)
+        .with_module_level("axum_session", Info)
+        .with_module_level("axum_session_auth", Warn)
+        .with_module_level("dioxus_core", Warn)
+        .with_module_level("dioxus_signals", Info)
+        .with_module_level("tracing", Warn)
         .init()
         .unwrap();
 }
