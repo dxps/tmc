@@ -18,18 +18,50 @@ pub fn Nav() -> Element {
                     "#
                  }
             }
-            div {
-                class: "sm:hidden",
-                button {
-                    class: "navbar-burger flex items-center text-green-600 p-3",
-                    dangerous_inner_html: r#"
-                        <svg class="block h-4 w-4 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <title>Mobile menu</title>
-                            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
-                        </svg>
-                        "#
+            // TODO: For later consideration.
+            // div {
+            //     class: "sm:hidden",
+            //     button {
+            //         class: "navbar-burger flex items-center text-green-600 p-3",
+            //         dangerous_inner_html: r#"
+            //             <svg class="block h-4 w-4 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            //                 <title>Mobile menu</title>
+            //                 <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
+            //             </svg>
+            //             "#
+            //     }
+            // }
+            ul {
+                class: "hidden absolute top-1/2 sm:left-1/3 sm:pl-16 md:left-1/2 lg:left-1/2 transform -translate-y-1/2 -translate-x-1/2
+                        sm:flex sm:mx-auto sm:flex sm:items-center sm:w-auto sm:space-x-3 lg:space-x-6",
+                li {
+                    Link { class: "text-sm text-green-600", to: Route::Home {}, "Home" }
+                }
+                li { class: "text-gray-300", NavSep{} }
+                li {
+                    class: "text-sm text-gray-400 hover:text-gray-700",
+                    Link { class: "text-sm text-green-600", to: Route::Blog { id: 123 }, "Blog" }
+                }
+                li { class: "text-gray-300", NavSep{} }
+                li {
+                    class: "text-sm text-gray-400 hover:text-gray-700",
+                    Link { class: "text-sm text-green-600", to: Route::Sample {}, "Sample" }
                 }
             }
+        }
+    }
+}
+
+fn NavSep() -> Element {
+    rsx! {
+        div {
+            dangerous_inner_html: r#"
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+            "#
         }
     }
 }
