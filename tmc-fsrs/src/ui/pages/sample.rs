@@ -2,7 +2,10 @@ use dioxus::prelude::*;
 
 use crate::{
     server::fns::sample::{get_server_data, post_server_data},
-    ui::{comps::Nav, routes::Route},
+    ui::{
+        comps::{Nav, NavProps},
+        routes::Route,
+    },
 };
 
 #[component]
@@ -13,7 +16,7 @@ pub fn Sample() -> Element {
     rsx! {
         div {
             class: "flex flex-col min-h-screen bg-gray-100",
-            Nav {}
+            Nav { active_path: NavProps::sample() },
             div { class: "flex flex-col min-h-screen justify-center items-center drop-shadow-2xl",
                 div { class: "bg-white rounded-md p-3",
                     div {

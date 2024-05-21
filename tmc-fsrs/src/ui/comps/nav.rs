@@ -1,7 +1,7 @@
 use crate::ui::routes::Route;
 use dioxus::prelude::*;
 
-pub fn Nav() -> Element {
+pub fn Nav(props: NavProps) -> Element {
     rsx! {
         nav {
             class: "relative px-4 py-4 flex justify-between items-center bg-white",
@@ -18,37 +18,49 @@ pub fn Nav() -> Element {
                     "#
                  }
             }
-            // TODO: For later consideration.
-            // div {
-            //     class: "sm:hidden",
-            //     button {
-            //         class: "navbar-burger flex items-center text-green-600 p-3",
-            //         dangerous_inner_html: r#"
-            //             <svg class="block h-4 w-4 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            //                 <title>Mobile menu</title>
-            //                 <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
-            //             </svg>
-            //             "#
-            //     }
-            // }
             ul {
                 class: "hidden absolute top-1/2 sm:left-1/3 sm:pl-16 md:left-1/2 lg:left-1/2 transform -translate-y-1/2 -translate-x-1/2
                         sm:flex sm:mx-auto sm:flex sm:items-center sm:w-auto sm:space-x-3 lg:space-x-6",
                 li {
-                    Link { class: "text-sm text-green-600", to: Route::Home {}, "Home" }
+                    Link {
+                        class: if props.active_path == NavProps::home() { "text-sm text-green-600" } else { "text-sm text-gray-400 hover:text-gray-700" },
+                        to: Route::Home {}, "Home"
+                    }
                 }
                 li { class: "text-gray-300", NavSep{} }
                 li {
-                    class: "text-sm text-gray-400 hover:text-gray-700",
-                    Link { class: "text-sm text-green-600", to: Route::Blog { id: 123 }, "Blog" }
+                    Link {
+                        class: if props.active_path == NavProps::blog() { "text-sm text-green-600" } else { "text-sm text-gray-400 hover:text-gray-700" },
+                        to: Route::Blog { id: 123 }, "Blog"
+                    }
                 }
                 li { class: "text-gray-300", NavSep{} }
                 li {
-                    class: "text-sm text-gray-400 hover:text-gray-700",
-                    Link { class: "text-sm text-green-600", to: Route::Sample {}, "Sample" }
+                    Link {
+                        class: if props.active_path == NavProps::sample() { "text-sm text-green-600" } else { "text-sm text-gray-400 hover:text-gray-700" },
+                        to: Route::Sample {}, "Sample"
+                    }
                 }
             }
         }
+    }
+}
+
+#[derive(PartialEq, Props, Clone)]
+pub struct NavProps {
+    #[props(default = "Home".to_string())]
+    pub active_path: String,
+}
+
+impl NavProps {
+    pub fn home() -> String {
+        "Home".to_string()
+    }
+    pub fn blog() -> String {
+        "Blog".to_string()
+    }
+    pub fn sample() -> String {
+        "Sample".to_string()
     }
 }
 
