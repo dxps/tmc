@@ -11,7 +11,8 @@ pub fn Nav(props: NavProps) -> Element {
                 Logo {}
             }
             ul {
-                class: "hidden absolute top-1/2 sm:left-1/3 sm:pl-16 md:left-1/2 lg:left-1/2 transform -translate-y-1/2 -translate-x-1/2
+                class: "hidden absolute top-1/2 sm:left-1/3 sm:pl-16 md:left-1/2 lg:left-1/2
+                        transform -translate-y-1/2 -translate-x-1/2
                         sm:flex sm:mx-auto sm:flex sm:items-center sm:w-auto sm:space-x-3 lg:space-x-6",
                 li {
                     Link {

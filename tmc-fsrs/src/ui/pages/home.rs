@@ -1,5 +1,5 @@
 use crate::{
-    server::fns::auth::{get_permissions, get_user_name, login, logout},
+    server::fns::auth::{get_permissions, get_user_name, logout},
     ui::{
         comps::{Nav, NavProps},
         routes::Route,
@@ -19,15 +19,15 @@ pub fn Home() -> Element {
             div { class: "flex flex-col min-h-screen justify-center items-center drop-shadow-2xl",
                 div {
                     table { class: "bg-white rounded-md",
-                        tr {
-                            td { class: "pl-4 py-2", colspan: 2,
-                                button {
-                                    class: "bg-green-50 drop-shadow-sm px-2 py-1 rounded-md",
-                                    onclick: move |_| { async move { login().await.unwrap(); } },
-                                    "Login Test User"
-                                }
-                            }
-                        }
+                        // tr {
+                        //     td { class: "pl-4 py-2", colspan: 2,
+                        //         button {
+                        //             class: "bg-green-50 drop-shadow-sm px-2 py-1 rounded-md",
+                        //             onclick: move |_| { async move { login().await.unwrap(); } },
+                        //             "Login Test User"
+                        //         }
+                        //     }
+                        // }
                         tr {
                             td { class: "pl-4 pl-2 py-2",
                                 button {
