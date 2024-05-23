@@ -64,7 +64,7 @@ pub fn Home() -> Element {
                     }
                 }
                 div { class: "pt-8",
-                    Link { class: "pr-10 hover:text-blue-600", to: Route::Blog { id: 123 }, "Go to Blog 123" }
+                    Link { class: "pr-10", to: Route::Blog { id: 123 }, "Go to Blog 123" }
                     Link { to: Route::Sample {}, "Go to Sample" }
                 }
             }

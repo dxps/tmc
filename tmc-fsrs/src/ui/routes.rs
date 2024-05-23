@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::ui::pages::{Blog, Home, Sample};
+use crate::ui::pages::{Blog, Home, Login, Sample};
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum Route {
@@ -12,6 +12,9 @@ pub enum Route {
 
     #[route("/sample")]
     Sample {},
+
+    #[route("/login")]
+    Login {},
 
     /// The catch all route, including the placement of the URL path segments in the `route` property.
     #[route("/:..route")]
