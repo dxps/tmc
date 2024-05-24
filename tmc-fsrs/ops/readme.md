@@ -1,5 +1,11 @@
 ## Database Migrations
 
+### Init Database
+
+Use `./db_init.sh` to create and initialize (populating it with all the changes that exist) the database as a Docker container.
+
+### Apply Changes
+
 Newer database changes introduced during development are applied as follows:
 
 1. Create the change using `./db_add_change.sh {change-name}`.<br/>

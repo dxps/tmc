@@ -17,10 +17,11 @@ Note: These are needed during development. In other words, if you don't change a
 #### Back-end related
 
 1. Install the `sqlx-cli` using `cargo install --version=0.7.4 sqlx-cli --no-default-features --features native-tls,postgres`.<br/>
-   If the compilation fails due to missing `openssl.pc` file, then do `sudo apt install libssl-dev` and rerun `cargo install` it.
+   If the compilation fails due to a missing `openssl.pc` file, then do `sudo apt install libssl-dev` and `cargo install` it.
 2. Run `./ops/db_init.sh` that:
     - Starts a PostgreSQL database instance as a Docker container.
     - Runs the database migrations within.
+3. Install the [`dioxus-cli`](https://crates.io/crates/dioxus-cli) using `cargo install dioxus-cli --version=0.5.4`.
 
 <br/>
 
