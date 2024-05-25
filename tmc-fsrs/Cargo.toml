@@ -41,6 +41,7 @@ log = { version = "0.4.21", optional = true }
 simple_logger = { version = "5.0.0", optional = true }
 
 dotenvy = { version = "0.15.7", optional = true }
+console_log = { version = "1.0.0", optional = true }
 
 [features]
 
@@ -50,6 +51,10 @@ server = [
     "dioxus/axum", "dioxus-fullstack/axum",
     "http", "tower", "tower-http",
     "async-trait",  "sqlx",  
-    "log", "simple_logger","dotenvy"
+    "log", "simple_logger", "console_log",
+    "dotenvy"
 ]
-web = ["dioxus/web"]
+web = [
+    "dioxus/web",
+    "log", "console_log"
+]

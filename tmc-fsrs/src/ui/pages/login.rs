@@ -1,9 +1,9 @@
-use dioxus::prelude::*;
-
 use crate::{
     server::fns::auth::login,
     ui::comps::{Nav, NavProps},
 };
+
+use dioxus::prelude::*;
 
 #[component]
 pub fn Login() -> Element {
@@ -23,25 +23,30 @@ pub fn Login() -> Element {
                     div { class: "mt-4 space-y-4",
                         div {
                             input {
-                                class: "px-3 py-3 rounded-lg outline-none border-2 focus:border-green-500",
+                                class: "px-3 py-3 rounded-lg outline-none border-2 focus:border-green-300",
                                 name: "email", r#type: "email", placeholder: "Email address",
                                 value: "{email}",
-                                oninput: move |evt| { email.set(evt.value()); }
+                                autofocus: "true",
+                                oninput: move |evt| { email.set(evt.value()); },
+                                onmounted: move |evt| async move {
+                                    log::debug!(">>> [Login] email input mounted. Setting the focus on it.");
+                                    _ = evt.set_focus(true).await;
+                                }
                             }
                         }
                         div {
                             input {
-                                class: "px-3 py-3 rounded-lg outline-none border-2 focus:border-green-500",
+                                class: "px-3 py-3 rounded-lg outline-none border-2 focus:border-green-300",
                                 name: "password", r#type: "password", placeholder: "Password",
                                 value: "{password}",
-                                oninput: move |evt| { password.set(evt.value()); }
+                                oninput: move |e| { password.set(e.value()); }
                             }
                         }
                         div { class: "justify-center text-center my-8",
                             button {
                                 class: "bg-blue-50 hover:bg-blue-100 drop-shadow-sm px-4 py-2 rounded-md",
                                 onclick: move |_| {
-                                    async move {login(format!("{}", email), format!("{}", password)).await.unwrap(); }
+                                    async move { login(format!("{}", email), format!("{}", password)).await.unwrap(); }
                                 },
                                 "Login"
                             }
