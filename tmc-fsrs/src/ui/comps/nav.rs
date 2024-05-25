@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 pub fn Nav(props: NavProps) -> Element {
     rsx! {
         nav {
-            class: "relative px-4 py-4 flex justify-between items-center bg-white",
+            class: "absolute w-full px-4 py-4 flex justify-between items-center bg-white z-40",
             Link {
                 class: "text-3xl font-bold leading-none",
                 to: Route::Home {},
