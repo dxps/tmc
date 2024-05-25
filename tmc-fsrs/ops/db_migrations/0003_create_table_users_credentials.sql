@@ -1,5 +1,5 @@
 
-create table if not exists users_credentials (
+create table users_accounts (
     id              BIGSERIAL                PRIMARY KEY,
     email           VARCHAR(255)                          DEFAULT '' UNIQUE,
     username        VARCHAR(255)             NOT NULL,
@@ -8,5 +8,6 @@ create table if not exists users_credentials (
     password        VARCHAR(255)             NOT NULL,
     salt            CHAR(12)                 NOT NULL,
     bio             TEXT                                  DEFAULT '',
-    image           VARCHAR(255)
+    image           VARCHAR(255),
+    state           CHAR(1)                  NOT NULL     DEFAULT 'A'
 );

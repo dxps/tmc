@@ -4,7 +4,9 @@ use axum_session_auth::*;
 use axum_session_sqlx::SessionPgPool;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
-use std::collections::HashSet;
+use std::{collections::HashSet, sync::Arc};
+
+use crate::server::{ServerState, UsersRepo};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
@@ -169,7 +171,12 @@ impl SqlUser {
     }
 }
 
-pub struct Session(pub axum_session_auth::AuthSession<User, i64, SessionPgPool, PgPool>);
+pub struct Session(
+    /// Auth Session
+    pub axum_session_auth::AuthSession<User, i64, SessionPgPool, PgPool>,
+    /// Users Repository
+    pub Arc<UsersRepo>,
+);
 
 impl std::ops::Deref for Session {
     type Target = axum_session_auth::AuthSession<User, i64, SessionPgPool, PgPool>;
@@ -213,7 +220,11 @@ impl<S: std::marker::Sync + std::marker::Send> axum::extract::FromRequestParts<S
     async fn from_request_parts(parts: &mut http::request::Parts, state: &S) -> Result<Self, Self::Rejection> {
         axum_session_auth::AuthSession::<User, i64, SessionPgPool, PgPool>::from_request_parts(parts, state)
             .await
-            .map(Session)
+            .map(|auth_session| {
+                let ss = parts.extensions.get::<ServerState>().unwrap();
+                let ur = ss.users_repo.clone();
+                Session(auth_session, ur)
+            })
             .map_err(|_| AuthSessionLayerNotFound)
     }
 }

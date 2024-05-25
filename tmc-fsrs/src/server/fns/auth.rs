@@ -1,15 +1,20 @@
 #[cfg(feature = "server")]
 use crate::auth::{Session, User};
+use crate::server::{model::User, AppError};
 #[cfg(feature = "server")]
 use log::debug;
 
 use dioxus_fullstack::prelude::*;
 
+pub type LoginResult = Result<User, AppError>;
+
 #[server(Login)]
-pub async fn login(email: String, password: String) -> Result<(), ServerFnError> {
-    debug!("Login: {} {}", email, password);
-    // TODO: Validate credentials, then create the user's session.
+pub async fn login(email: String, password: String) -> Result<User, ServerFnError> {
+    //
+    debug!("[login] Received email:'{}', password:'{}'", email, password);
     let session: Session = extract().await?;
+    let user_entry = session.1.get_by_email(&email, crate::server::AppUseCase::UserLogin).await;
+    debug!("[login] user_entry: {:?}", user_entry);
     session.login_user(2);
     Ok(())
 }
