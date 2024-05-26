@@ -3,11 +3,11 @@ mod database;
 
 pub mod fns;
 
-#[cfg(feature = "server")]
 mod app_usecase_err;
+pub use app_usecase_err::*;
 
-#[cfg(feature = "server")]
 mod model;
+pub use model::*;
 
 #[cfg(feature = "server")]
 mod repos;
@@ -19,4 +19,4 @@ mod server;
 mod state;
 
 #[cfg(feature = "server")]
-pub use {app_usecase_err::*, database::*, repos::*, server::*, state::*};
+pub use {database::*, repos::*, server::*, state::*};

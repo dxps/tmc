@@ -6,10 +6,7 @@ pub fn start(app_fn: fn() -> Element) {
     use std::sync::Arc;
 
     //
-    use crate::{
-        auth::User,
-        server::{connect_to_pgdb, ServerState},
-    };
+    use crate::server::{connect_to_pgdb, ServerState, UserAccount};
     use axum::{routing::*, Extension};
     use axum_session::{SessionConfig, SessionLayer};
     use axum_session_auth::{AuthConfig, AuthSessionLayer};
@@ -39,15 +36,15 @@ pub fn start(app_fn: fn() -> Element) {
             .await
             .unwrap();
 
-        User::create_user_tables(&pg_pool).await;
-
         let state = ServerState::new(Arc::new(pg_pool.clone()));
+
+        // TODO: Auto register admin user.
 
         let web_api_router = Router::new()
             // Server side render the application, serve static assets, and register server functions.
             .serve_dioxus_application(ServeConfig::builder().build(), move || VirtualDom::new(app_fn))
             .await
-            .layer(AuthSessionLayer::<User, i64, SessionPgPool, PgPool>::new(Some(pg_pool)).with_config(auth_config))
+            .layer(AuthSessionLayer::<UserAccount, i64, SessionPgPool, PgPool>::new(Some(pg_pool)).with_config(auth_config))
             .layer(SessionLayer::new(session_store))
             .layer(Extension(state));
 
