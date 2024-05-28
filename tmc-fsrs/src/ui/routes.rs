@@ -16,7 +16,7 @@ pub enum Route {
     #[route("/login")]
     Login {},
 
-    /// The catch all route, including the placement of the URL path segments in the `route` property.
+    /// The catch-all route, including the placement of the URL path segments in the `route` property.
     #[route("/:..route")]
     PageNotFound { route: Vec<String> },
 }

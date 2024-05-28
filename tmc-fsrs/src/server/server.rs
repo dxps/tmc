@@ -1,13 +1,11 @@
 #[cfg(feature = "server")]
 use dioxus::dioxus_core::Element;
 
-use super::{auth::AuthMgr, AppError, UserAccount, UsersRepo};
+use super::{auth::AuthMgr, AppError};
 
 #[cfg(feature = "server")]
 pub fn start(app_fn: fn() -> Element) {
     use std::sync::Arc;
-
-    //
     use crate::server::{connect_to_pgdb, ServerState, UserAccount};
     use axum::{routing::*, Extension};
     use axum_session::{SessionConfig, SessionLayer};

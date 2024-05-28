@@ -19,7 +19,7 @@ impl AuthMgr {
         self.user_repo.save(email, username, pwd, salt).await
     }
 
-    pub async fn login_user(&self, email: String, pwd: String) -> Result<UserAccount, AppError> {
+    pub async fn authenticate_user(&self, email: String, pwd: String) -> Result<UserAccount, AppError> {
         //
         let user_entry = self.user_repo.get_by_email(&email, AppUseCase::UserLogin).await?;
         match Self::check_password(&pwd, &user_entry.password, &user_entry.salt) {

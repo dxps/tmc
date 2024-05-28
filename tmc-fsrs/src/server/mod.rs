@@ -3,8 +3,8 @@ mod database;
 
 pub mod fns;
 
-mod app_usecase_err;
-pub use app_usecase_err::*;
+mod app_uc_err;
+pub use app_uc_err::*;
 
 mod domain;
 pub use domain::*;
