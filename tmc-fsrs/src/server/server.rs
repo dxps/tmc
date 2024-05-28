@@ -1,6 +1,8 @@
 #[cfg(feature = "server")]
 use dioxus::dioxus_core::Element;
 
+use super::{auth::AuthMgr, AppError, UserAccount, UsersRepo};
+
 #[cfg(feature = "server")]
 pub fn start(app_fn: fn() -> Element) {
     use std::sync::Arc;
@@ -38,7 +40,10 @@ pub fn start(app_fn: fn() -> Element) {
 
         let state = ServerState::new(Arc::new(pg_pool.clone()));
 
-        // TODO: Auto register admin user.
+        register_admin_user(&state.auth_mgr.as_ref())
+            .await
+            .expect("Self registering admin user failed");
+        log::debug!("Registered admin user.");
 
         let web_api_router = Router::new()
             // Server side render the application, serve static assets, and register server functions.
@@ -71,4 +76,17 @@ fn init_logging() {
         .with_module_level("tracing", Warn)
         .init()
         .unwrap();
+}
+
+async fn register_admin_user(auth_mgr: &AuthMgr) -> Result<(), AppError> {
+    match auth_mgr
+        .register_user("admin@tmc".into(), "admin".into(), "admin".into())
+        .await
+    {
+        Ok(_) => Ok(()),
+        Err(app_err) => match app_err {
+            AppError::AlreadyExists(_) => Ok(()),
+            _ => Err(app_err),
+        },
+    }
 }

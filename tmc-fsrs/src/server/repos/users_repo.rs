@@ -2,7 +2,7 @@ use sqlx::{postgres::PgRow, FromRow, PgPool, Row};
 use std::sync::Arc;
 
 use crate::server::{
-    model::{UserAccount, UserEntry},
+    domain::{UserAccount, UserEntry},
     AppError, AppUseCase,
 };
 
@@ -48,14 +48,14 @@ impl UsersRepo {
         Some(user_account)
     }
 
-    pub async fn save(&self, user: &UserAccount, pwd: String, salt: String) -> Result<i64, AppError> {
+    pub async fn save(&self, email: String, username: String, pwd: String, salt: String) -> Result<i64, AppError> {
         //
         match sqlx::query(
-            "INSERT INTO user_accounts (email, username, password, salt) 
+            "INSERT INTO users_accounts (email, username, password, salt) 
              VALUES ($1, $2, $3, $4) RETURNING id",
         )
-        .bind(&user.email)
-        .bind(&user.username)
+        .bind(email)
+        .bind(username)
         .bind(pwd)
         .bind(salt)
         .fetch_one(self.dbcp.as_ref())

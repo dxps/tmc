@@ -1,14 +1,14 @@
 #[cfg(feature = "server")]
 use crate::auth::Session;
 
-use crate::server::{model::UserAccount, AppError};
+use crate::server::domain::UserAccount;
 
 #[cfg(feature = "server")]
 use log::debug;
 
 use dioxus_fullstack::prelude::*;
 
-pub type LoginResult = Result<UserAccount, AppError>;
+//pub type LoginResult = Result<UserAccount, AppError>;
 
 #[server(Login)]
 pub async fn login(email: String, password: String) -> Result<UserAccount, ServerFnError> {

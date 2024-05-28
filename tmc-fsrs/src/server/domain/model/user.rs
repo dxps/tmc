@@ -34,7 +34,8 @@ pub struct UserEntry {
     pub salt: String,
 }
 
-// #[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
-// pub struct UserPermission {
-//     pub permission: String,
-// }
+impl From<UserEntry> for UserAccount {
+    fn from(entry: UserEntry) -> Self {
+        entry.user
+    }
+}
