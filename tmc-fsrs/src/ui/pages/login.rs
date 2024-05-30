@@ -1,15 +1,18 @@
+use dioxus::prelude::*;
+
 use crate::{
     server::fns::auth::login,
     ui::comps::{Nav, NavProps},
 };
-
-use dioxus::prelude::*;
+use crate::ui::routes::Route;
 
 #[component]
 pub fn Login() -> Element {
     //
     let mut email = use_signal(|| "".to_string());
     let mut password = use_signal(|| "".to_string());
+
+    let nav = use_navigator();
 
     rsx! {
         div {
@@ -46,7 +49,18 @@ pub fn Login() -> Element {
                             button {
                                 class: "bg-blue-50 hover:bg-blue-100 drop-shadow-sm px-4 py-2 rounded-md",
                                 onclick: move |_| {
-                                    async move { login(format!("{}", email), format!("{}", password)).await.unwrap(); }
+                                    async move {
+                                        match login(format!("{}", email), format!("{}", password)).await {
+                                            Ok(account) => {
+                                                log::debug!(">>> [Login] Authenticated and got {:?}. Going to home.", account);
+                                                nav.push(Route::Home {});
+                                            }
+                                            Err(e) => {
+                                                log::debug!(">>> [Login] Authentication failed. Error: {}", e);
+                                                // TODO: Show an error in UI.
+                                            }
+                                        }
+                                    }
                                 },
                                 "Login"
                             }
