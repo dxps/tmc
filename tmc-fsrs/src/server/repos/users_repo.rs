@@ -132,8 +132,6 @@ impl From<(sqlx::Error, AppUseCase)> for AppError {
                 sqlx::Error::RowNotFound => AppError::NotFound("profile".into()),
                 _ => AppError::InternalErr,
             },
-            // Anything else is treated as an internal error.
-            // _ => AppError::InternalErr,
         }
     }
 }

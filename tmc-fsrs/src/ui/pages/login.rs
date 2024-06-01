@@ -1,10 +1,10 @@
 use dioxus::prelude::*;
 
+use crate::ui::routes::Route;
 use crate::{
     server::fns::auth::login,
     ui::comps::{Nav, NavProps},
 };
-use crate::ui::routes::Route;
 
 #[component]
 pub fn Login() -> Element {
@@ -12,6 +12,7 @@ pub fn Login() -> Element {
     let mut email = use_signal(|| "".to_string());
     let mut password = use_signal(|| "".to_string());
 
+    let mut wrong_creds = use_signal(|| false);
     let nav = use_navigator();
 
     rsx! {
@@ -32,7 +33,7 @@ pub fn Login() -> Element {
                                 autofocus: "true",
                                 oninput: move |evt| { email.set(evt.value()); },
                                 onmounted: move |evt| async move {
-                                    log::debug!(">>> [Login] email input mounted. Setting the focus on it.");
+                                    log::debug!(">>> [Login] OnMounted, write_cred={}", wrong_creds);
                                     _ = evt.set_focus(true).await;
                                 }
                             }
@@ -43,6 +44,11 @@ pub fn Login() -> Element {
                                 name: "password", r#type: "password", placeholder: "Password",
                                 value: "{password}",
                                 oninput: move |e| { password.set(e.value()); }
+                            }
+                        }
+                        div { class: "justify-center text-center text-red-600 my-8",
+                            span { class: if ! wrong_creds() { "hidden" },
+                                "Wrong credentials"
                             }
                         }
                         div { class: "justify-center text-center my-8",
@@ -57,7 +63,9 @@ pub fn Login() -> Element {
                                             }
                                             Err(e) => {
                                                 log::debug!(">>> [Login] Authentication failed. Error: {}", e);
-                                                // TODO: Show an error in UI.
+                                                if e.to_string().contains("wrong credentials") {
+                                                    wrong_creds.set(true);
+                                                }
                                             }
                                         }
                                     }
