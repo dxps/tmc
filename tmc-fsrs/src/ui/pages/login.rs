@@ -33,7 +33,6 @@ pub fn Login() -> Element {
                                 autofocus: "true",
                                 oninput: move |evt| { email.set(evt.value()); },
                                 onmounted: move |evt| async move {
-                                    log::debug!(">>> [Login] OnMounted, write_cred={}", wrong_creds);
                                     _ = evt.set_focus(true).await;
                                 }
                             }
@@ -43,7 +42,14 @@ pub fn Login() -> Element {
                                 class: "px-3 py-3 rounded-lg outline-none border-2 focus:border-green-300",
                                 name: "password", r#type: "password", placeholder: "Password",
                                 value: "{password}",
-                                oninput: move |e| { password.set(e.value()); }
+                                oninput: move |e| { password.set(e.value()); },
+                                onkeypress: move |evt| {
+                                    async move {
+                                        if evt.key() == Key::Enter {
+                                            handle_login(email(), password(), &mut wrong_creds, &nav).await;
+                                        }
+                                    }
+                                }
                             }
                         }
                         div { class: "justify-center text-center text-red-600 my-8",
@@ -56,18 +62,7 @@ pub fn Login() -> Element {
                                 class: "bg-blue-50 hover:bg-blue-100 drop-shadow-sm px-4 py-2 rounded-md",
                                 onclick: move |_| {
                                     async move {
-                                        match login(format!("{}", email), format!("{}", password)).await {
-                                            Ok(account) => {
-                                                log::debug!(">>> [Login] Authenticated and got {:?}. Going to home.", account);
-                                                nav.push(Route::Home {});
-                                            }
-                                            Err(e) => {
-                                                log::debug!(">>> [Login] Authentication failed. Error: {}", e);
-                                                if e.to_string().contains("wrong credentials") {
-                                                    wrong_creds.set(true);
-                                                }
-                                            }
-                                        }
+                                        handle_login(email(), password(), &mut wrong_creds, &nav).await;
                                     }
                                 },
                                 "Login"
@@ -75,6 +70,21 @@ pub fn Login() -> Element {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+async fn handle_login(email: String, password: String, wrong_creds: &mut Signal<bool>, nav: &Navigator) {
+    match login(format!("{}", email), format!("{}", password)).await {
+        Ok(account) => {
+            log::debug!(">>> [Login] Authenticated and got {:?}. Going to home.", account);
+            nav.push(Route::Home {});
+        }
+        Err(e) => {
+            log::debug!(">>> [Login] Authentication failed. Error: {}", e);
+            if e.to_string().contains("wrong credentials") {
+                wrong_creds.set(true);
             }
         }
     }
