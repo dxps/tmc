@@ -15,7 +15,7 @@ impl State {
 
     pub fn load_from_localstorage() -> Signal<Self> {
         let state_sgnl = use_synced_storage::<LocalStorage, State>(Self::LS_KEY.into(), || State::default());
-        log::debug!(">>> Loaded state from localstorage {:?}", state_sgnl());
+        log::debug!(">>> Loaded from localstorage {:?}", state_sgnl());
         state_sgnl
     }
 

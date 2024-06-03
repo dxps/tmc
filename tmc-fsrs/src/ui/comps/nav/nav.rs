@@ -6,9 +6,6 @@ use dioxus::prelude::*;
 
 pub fn Nav(props: NavProps) -> Element {
     //
-    // let state = State::load_from_localstorage();
-    // use_context_provider(|| state.clone());
-
     rsx! {
         nav {
             class: "absolute w-full px-4 py-4 flex justify-between items-center bg-white z-40",
