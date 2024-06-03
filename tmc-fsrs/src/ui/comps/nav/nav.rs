@@ -1,7 +1,14 @@
+use crate::ui::comps::nav::common::{style_link, NavProps};
+use crate::ui::comps::NavUserMenu;
 use crate::ui::routes::Route;
+// use crate::ui::State;
 use dioxus::prelude::*;
 
 pub fn Nav(props: NavProps) -> Element {
+    //
+    // let state = State::load_from_localstorage();
+    // use_context_provider(|| state.clone());
+
     rsx! {
         nav {
             class: "absolute w-full px-4 py-4 flex justify-between items-center bg-white z-40",
@@ -32,32 +39,8 @@ pub fn Nav(props: NavProps) -> Element {
                     }
                 }
             }
-            Link {
-                class: style_link(&props.active_path, NavProps::login()).to_owned() + "hidden sm:inline-block sm:ml-auto sm:mr-3",
-                to: Route::Login {}, "Login",
-            }
+            NavUserMenu { active_path: &props.active_path }
         }
-    }
-}
-
-#[derive(PartialEq, Props, Clone)]
-pub struct NavProps {
-    #[props(default = "home".to_string())]
-    pub active_path: String,
-}
-
-impl NavProps {
-    pub fn home() -> String {
-        "home".to_string()
-    }
-    pub fn blog() -> String {
-        "blog".to_string()
-    }
-    pub fn sample() -> String {
-        "sample".to_string()
-    }
-    pub fn login() -> String {
-        "login".to_string()
     }
 }
 
@@ -74,14 +57,6 @@ fn NavSep() -> Element {
                 "#
             }
         }
-    }
-}
-
-fn style_link(curr_path: &String, link_path: String) -> &'static str {
-    if *curr_path == link_path {
-        "text-sm text-green-600 py-2 px-4 hover:bg-gray-50 rounded-lg transition duration-200"
-    } else {
-        "text-sm text-gray-600 py-2 px-4 hover:bg-gray-50 rounded-lg transition duration-200"
     }
 }
 

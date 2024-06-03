@@ -16,7 +16,7 @@ pub async fn login(email: String, password: String) -> Result<UserAccount, Serve
     let session: Session = extract().await?;
     let account = session.1.authenticate_user(email, password).await?;
     session.login_user(account.id);
-    debug!("[login] Logged in user with account: {:?}", account);
+    debug!("[login] Logged-in user with account: {:?}", account);
     Ok(account)
 }
 

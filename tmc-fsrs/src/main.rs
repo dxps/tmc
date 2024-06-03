@@ -14,6 +14,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(feature = "server")]
     dotenvy::dotenv()?;
 
+    dioxus_sdk::storage::set_dir!();
+
     #[cfg(feature = "server")]
     server::start(ui::App);
 

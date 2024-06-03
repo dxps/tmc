@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// User account contains most of the details of a user (except password related ones).
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Serialize, Deserialize)]
 pub struct UserAccount {
     pub id: i64,
     pub email: String,
