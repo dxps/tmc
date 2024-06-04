@@ -6,8 +6,14 @@ pub fn App() -> Element {
     //
     _ = console_log::init_with_level(log::Level::Debug);
 
-    let state = State::load_from_localstorage();
-    use_context_provider(|| state);
+    _ = use_context_provider(|| Signal::new(State::default()));
+
+    // Asynchronously loading state from localstorage and notify its value through the signal.
+    use_future(move || async move {
+        let mut state = use_context::<Signal<State>>();
+        let local_state = State::load_from_localstorage();
+        *state.write() = local_state();
+    });
 
     rsx! {
         Router::<Route> {}
