@@ -77,11 +77,14 @@ pub fn Login() -> Element {
 
 async fn handle_login(email: String, password: String, wrong_creds: &mut Signal<bool>, nav: &Navigator) {
     use crate::ui::State;
-    
+
     match login(format!("{}", email), format!("{}", password)).await {
         Ok(account) => {
             log::debug!(">>> [Login] Authenticated and got {:?}. Going to home.", account);
-            State::new(&account).save_to_localstorage();
+            let state = State::new(&account);
+            state.save_to_localstorage();
+            let mut state_sgnl = use_context::<Signal<State>>();
+            *state_sgnl.write() = state;
             nav.push(Route::Home {});
         }
         Err(e) => {

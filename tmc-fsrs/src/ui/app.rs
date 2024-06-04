@@ -7,7 +7,7 @@ pub fn App() -> Element {
     _ = console_log::init_with_level(log::Level::Debug);
 
     let state = State::load_from_localstorage();
-    use_context_provider(|| state.clone());
+    use_context_provider(|| state);
 
     rsx! {
         Router::<Route> {}

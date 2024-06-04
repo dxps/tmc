@@ -9,7 +9,7 @@ pub fn NavUserMenu(props: NavProps) -> Element {
     let state = use_context::<Signal<State>>();
 
     if state().current_user.is_none() {
-        log::debug!(">>> [NavUserMenu] There is no current user.");
+        log::debug!(">>> [NavUserMenu] There is no locally saved user.");
         rsx! {
             Link {
                     class: style_link(&props.active_path, NavProps::login()).to_owned() + "hidden sm:inline-block sm:ml-auto sm:mr-3",
@@ -17,9 +17,15 @@ pub fn NavUserMenu(props: NavProps) -> Element {
             }
         }
     } else {
-        log::debug!(">>> [NavUserMenu] There is a current user: {:?}.", state().current_user);
+        let username = state().current_user.unwrap().username;
+        log::debug!(
+            ">>> [NavUserMenu] There is a locally saved user with username: {:?}.",
+            username
+        );
         rsx! {
-            { "UserMenu" }
+            div {
+                "UserMenu ({username})"
+            }
         }
     }
 }
