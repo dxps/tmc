@@ -39,14 +39,19 @@ pub fn NavUserMenu(props: NavProps) -> Element {
                     }
                 }
                 if show_dropdown() {
-                    NavUserDropdown {}
+                    NavUserDropdown { username }
                 }
             }
         }
     }
 }
 
-pub fn NavUserDropdown() -> Element {
+#[derive(Props, PartialEq, Clone)]
+struct NavUserDropdownProps {
+    username: String,
+}
+
+fn NavUserDropdown(props: NavUserDropdownProps) -> Element {
     //
     rsx! {
         div {
@@ -55,12 +60,20 @@ pub fn NavUserDropdown() -> Element {
                 ul {
                     class: "absolute shadow-lg bg-white py-2 z-[1000] min-w-full w-max rounded-lg max-h-96 overflow-auto",
                     li {
-                        class: "py-2.5 px-5 flex items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer",
-                        div { dangerous_inner_html: user_icon() },
-                        "View profile"
+                        class: "py-2.5 px-12 flex items-center text-[#888] text-sm",
+                        "{props.username} user menu"
                     }
                     li {
                         class: "py-2.5 px-5 flex items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer",
+                        div { dangerous_inner_html: user_icon() },
+                        "My profile"
+                    }
+                    li {
+                        class: "py-2.5 px-5 flex items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer",
+                        onclick: move |_| { async move {
+                                handle_logout().await;
+                            }
+                        },
                         div { dangerous_inner_html: logout_icon() },
                         "Logout"
                     }
@@ -68,6 +81,20 @@ pub fn NavUserDropdown() -> Element {
             }
         }
     }
+}
+
+async fn handle_logout() {
+    use crate::server::fns::auth::logout;
+    use crate::ui::State;
+
+    log::debug!(">>> [NavUserDropdown] Logout clicked.");
+    logout().await.unwrap();
+    let state = State::default();
+    state.save_to_localstorage();
+    let mut state_sgnl = use_context::<Signal<State>>();
+    *state_sgnl.write() = state;
+    let nav = &use_navigator();
+    nav.push(Route::Home {});
 }
 
 fn btn_user_icon() -> String {
