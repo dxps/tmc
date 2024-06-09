@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::ui::comps::nav::common::{style_link, NavProps};
+use crate::ui::comps::{style_nav_item_link, style_nav_item_user_menu, NavProps};
 use crate::ui::routes::Route;
 use crate::ui::State;
 
@@ -13,7 +13,8 @@ pub fn NavUserMenu(props: NavProps) -> Element {
         log::debug!(">>> [NavUserMenu] There is no locally saved user.");
         rsx! {
             Link {
-                    class: style_link(&props.active_path, NavProps::login()).to_owned() + "hidden sm:inline-block sm:ml-auto sm:mr-3",
+                    class: style_nav_item_link(&props.active_path, NavProps::login()).to_owned()
+                           + "hidden sm:inline-block sm:ml-auto sm:mr-3",
                     to: Route::Login {}, "Login",
             }
         }
@@ -25,9 +26,10 @@ pub fn NavUserMenu(props: NavProps) -> Element {
         );
         rsx! {
             div {
-                class: "flex flex-col items-end",
+                class: style_nav_item_user_menu(&props.active_path).to_owned()
+                       + " flex flex-col items-end",
                 button {
-                    class: "px-4 py-1 align  rounded-lg text-[#333] text-sm outline-none hover:bg-gray-100",
+                    class: "px-4 py-1 align  rounded-lg text-sm outline-none hover:bg-gray-100",
                     onclick: move |_| {
                         let curr_val = show_dropdown();
                         *show_dropdown.write() = !curr_val;

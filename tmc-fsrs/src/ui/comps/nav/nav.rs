@@ -1,4 +1,4 @@
-use crate::ui::comps::nav::common::{style_link, NavProps};
+use crate::ui::comps::nav::common::{style_nav_item_link, NavProps};
 use crate::ui::comps::NavUserMenu;
 use crate::ui::routes::Route;
 // use crate::ui::State;
@@ -20,19 +20,19 @@ pub fn Nav(props: NavProps) -> Element {
                         sm:flex sm:mx-auto sm:flex sm:items-center sm:w-auto sm:space-x-3 lg:space-x-6",
                 li {
                     Link {
-                        class: style_link(&props.active_path, NavProps::home()), to: Route::Home {}, "Home"
+                        class: style_nav_item_link(&props.active_path, NavProps::home()), to: Route::Home {}, "Home"
                     }
                 }
                 NavSep{}
                 li {
                     Link {
-                        class: style_link(&props.active_path, NavProps::blog()), to: Route::Blog { id: 123 }, "Blog"
+                        class: style_nav_item_link(&props.active_path, NavProps::blog()), to: Route::Blog { id: 123 }, "Blog"
                     }
                 }
                 NavSep{}
                 li {
                     Link {
-                        class: style_link(&props.active_path, NavProps::sample()), to: Route::Sample {}, "Sample"
+                        class: style_nav_item_link(&props.active_path, NavProps::sample()), to: Route::Sample {}, "Sample"
                     }
                 }
             }
