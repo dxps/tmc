@@ -26,7 +26,6 @@ pub fn NavUserMenu(props: NavProps) -> Element {
         rsx! {
             div {
                 class: "flex flex-col items-end",
-                // "UserMenu ({username})"
                 button {
                     class: "px-4 py-1 align  rounded-lg text-[#333] text-sm outline-none hover:bg-gray-100",
                     onclick: move |_| {
@@ -64,12 +63,16 @@ fn NavUserDropdown(props: NavUserDropdownProps) -> Element {
                         "{props.username} user menu"
                     }
                     li {
-                        class: "py-2.5 px-5 flex items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer",
-                        div { dangerous_inner_html: user_icon() },
-                        "My profile"
+                        class: "flex items-center text-[#333] hover:bg-gray-100 hover:text-orange-600 text-sm cursor-pointer",
+                        Link {
+                            class: "py-2.5 px-5 min-w-full w-max min-h-full flex text-[#333]",
+                            to: Route::UserProfile { username: props.username },
+                            div { dangerous_inner_html: user_icon() },
+                            "My profile"
+                        }
                     }
                     li {
-                        class: "py-2.5 px-5 flex items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer",
+                        class: "py-2.5 px-5 flex items-center text-[#333] hover:bg-gray-100 hover:text-orange-600 text-sm cursor-pointer",
                         onclick: move |_| { async move {
                                 handle_logout().await;
                             }
