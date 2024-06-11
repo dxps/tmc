@@ -52,12 +52,12 @@ pub fn Login() -> Element {
                                 }
                             }
                         }
-                        div { class: "justify-center text-center text-red-600 my-8",
+                        div { class: "text-center text-red-600 my-8",
                             span { class: if ! wrong_creds() { "hidden" },
                                 "Wrong credentials"
                             }
                         }
-                        div { class: "justify-center text-center my-8",
+                        div { class: "text-center my-8",
                             button {
                                 class: "bg-blue-50 hover:bg-blue-100 drop-shadow-sm px-4 py-2 rounded-md",
                                 onclick: move |_| {

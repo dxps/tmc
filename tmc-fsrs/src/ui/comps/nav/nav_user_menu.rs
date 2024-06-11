@@ -94,7 +94,7 @@ async fn handle_logout() {
     use crate::ui::State;
 
     log::debug!(">>> [NavUserDropdown] Logout clicked.");
-    logout().await.unwrap();
+    logout().await.unwrap(); // TODO: Handle this if it fails.
     let state = State::default();
     state.save_to_localstorage();
     let mut state_sgnl = use_context::<Signal<State>>();

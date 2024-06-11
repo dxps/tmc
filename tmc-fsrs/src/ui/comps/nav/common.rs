@@ -1,5 +1,7 @@
 use dioxus::prelude::*;
 
+use crate::ui::{comps::Nav, routes::Route};
+
 /// Navigation header specific function to highlight the link based on the current path.
 pub fn style_nav_item_link(curr_path: &String, link_path: String) -> &'static str {
     if *curr_path == link_path {
@@ -44,5 +46,27 @@ impl NavProps {
     }
     pub fn users_section() -> String {
         "/users/".to_string()
+    }
+}
+
+pub fn render_go_to_login() -> Element {
+    rsx! {
+        div {
+            class: "flex flex-col min-h-screen bg-gray-100",
+            Nav { active_path: NavProps::login() },
+            div { class: "flex flex-col min-h-screen justify-center items-center drop-shadow-2xl",
+                div { class: "bg-white rounded-md p-10",
+                    div {
+                        "You need to login to access this page."
+                    }
+                    div { class: "mt-6 text-center",
+                        Link {
+                            class: "text-sm text-gray-600 py-2 px-4 hover:bg-gray-50 rounded-lg transition duration-200",
+                            to: Route::Login {}, "Login",
+                        }
+                    }
+                }
+            }
+        }
     }
 }
