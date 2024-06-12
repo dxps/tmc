@@ -62,7 +62,7 @@ fn NavUserDropdown(mut props: NavUserDropdownProps) -> Element {
                 *props.show_dropdown.write() = false;
             },
             div {
-                class: "w-48 mr-2 bg-gray-100 rounded-lg shadow-2xl float-right",
+                class: "w-48 mr-2 bg-white rounded-lg shadow-2xl float-right",
                 div {
                     ul {
                         class: "shadow-lg bg-white py-2 z-[1000] min-w-full w-max rounded-lg max-h-96 overflow-auto",

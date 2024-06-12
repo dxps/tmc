@@ -22,7 +22,7 @@ fn render_user_profile_form(ua: UserAccount) -> Element {
             class: "flex flex-col min-h-screen bg-gray-100",
             Nav { active_path: NavProps::users_section() },
             div { class: "flex flex-col min-h-screen justify-center items-center drop-shadow-2xl",
-                div { class: "bg-white rounded-md p-6",
+                div { class: "bg-white rounded-md p-6 mt-24 mb-8",
                     h1 { class: "text-3xl text-[#333] font-bold text-center",
                         "User Profile"
                     }
