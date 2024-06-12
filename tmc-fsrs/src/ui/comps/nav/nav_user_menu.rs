@@ -27,7 +27,7 @@ pub fn NavUserMenu(props: NavProps) -> Element {
         rsx! {
             div {
                 class: style_nav_item_user_menu(&props.active_path).to_owned()
-                       + " flex flex-col items-end",
+                       + " flex flex-col items-end overflow-visible",
                 button {
                     class: "px-4 py-1 align  rounded-lg text-sm outline-none",
                     onclick: move |_| {
@@ -40,7 +40,7 @@ pub fn NavUserMenu(props: NavProps) -> Element {
                     }
                 }
                 if show_dropdown() {
-                    NavUserDropdown { username }
+                    NavUserDropdown { username, show_dropdown }
                 }
             }
         }
@@ -50,38 +50,45 @@ pub fn NavUserMenu(props: NavProps) -> Element {
 #[derive(Props, PartialEq, Clone)]
 struct NavUserDropdownProps {
     username: String,
+    show_dropdown: Signal<bool>,
 }
 
-fn NavUserDropdown(props: NavUserDropdownProps) -> Element {
+fn NavUserDropdown(mut props: NavUserDropdownProps) -> Element {
     //
     rsx! {
-        div {
-            class: "w-48 mr-2 bg-white rounded-lg shadow-2xl",
+        div { "style": "width: 100%; height: 1000%; padding: 0; position: absolute; top: 0; left: 0; z-index: 1000;",
+            onclick: move |_| {
+                log::debug!(">>> [NavUserDropdown] Clicked in the outer div!");
+                *props.show_dropdown.write() = false;
+            },
             div {
-                ul {
-                    class: "absolute shadow-lg bg-white py-2 z-[1000] min-w-full w-max rounded-lg max-h-96 overflow-auto",
-                    li {
-                        class: "py-2.5 px-12 flex items-center text-[#888] text-sm",
-                        "{props.username} user menu"
-                    }
-                    li {
-                        class: "flex items-center text-[#333] hover:bg-gray-100 hover:text-orange-600 text-sm cursor-pointer",
-                        Link {
-                            class: "py-2.5 px-5 min-w-full w-max min-h-full flex text-[#333]",
-                            to: Route::UserProfile { username: props.username },
-                            div { dangerous_inner_html: user_icon() },
-                            "My profile"
+                class: "w-48 mr-2 bg-gray-100 rounded-lg shadow-2xl float-right",
+                div {
+                    ul {
+                        class: "shadow-lg bg-white py-2 z-[1000] min-w-full w-max rounded-lg max-h-96 overflow-auto",
+                        li {
+                            class: "py-2.5 px-12 flex items-center text-[#888] text-sm",
+                            "{props.username} user menu"
                         }
-                    }
-                    li {
-                        class: "py-2.5 px-5 flex items-center text-[#333] text-sm cursor-pointer
-                                hover:bg-gray-100 hover:text-orange-600",
-                        onclick: move |_| { async move {
-                                handle_logout().await;
+                        li {
+                            class: "flex items-center text-[#333] hover:bg-gray-100 hover:text-orange-600 text-sm cursor-pointer",
+                            Link {
+                                class: "py-2.5 px-5 min-w-full w-max min-h-full flex text-[#333]",
+                                to: Route::UserProfile { username: props.username },
+                                div { dangerous_inner_html: user_icon() },
+                                "My profile"
                             }
-                        },
-                        div { dangerous_inner_html: logout_icon() },
-                        "Logout"
+                        }
+                        li {
+                            class: "py-2.5 px-5 flex items-center text-[#333] text-sm cursor-pointer
+                                    hover:bg-gray-100 hover:text-orange-600",
+                            onclick: move |_| { async move {
+                                    handle_logout().await;
+                                }
+                            },
+                            div { dangerous_inner_html: logout_icon() },
+                            "Logout"
+                        }
                     }
                 }
             }
