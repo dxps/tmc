@@ -64,7 +64,7 @@ fn NavUserDropdown(mut props: NavUserDropdownProps) -> Element {
                 log::debug!(">>> [NavUserDropdown] Clicked in the outer div!");
                 *props.show_dropdown.write() = false;
             },
-            div { class: "w-48 mr-2 bg-white rounded-lg shadow-2xl float-right",
+            div { class: "w-20 mt-14 mr-28 bg-white rounded-lg shadow-2xl float-right",
                 div {
                     ul { class: "shadow-lg bg-white py-2 z-[1000] min-w-full w-max rounded-lg max-h-96 overflow-auto",
                         li { class: "py-2.5 px-12 flex items-center text-[#888] text-sm",
