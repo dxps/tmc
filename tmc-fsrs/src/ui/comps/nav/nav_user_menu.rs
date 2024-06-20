@@ -14,7 +14,7 @@ pub fn NavUserMenu(props: NavProps) -> Element {
         rsx! {
             Link {
                 class: style_nav_item_link(&props.active_path, NavProps::login()).to_owned()
-                    + "hidden sm:inline-block sm:ml-auto sm:mr-3",
+                    + "sm:inline-block sm:ml-auto sm:mr-3",
                 to: Route::Login {},
                 "Login"
             }
@@ -30,7 +30,7 @@ pub fn NavUserMenu(props: NavProps) -> Element {
                 class: style_nav_item_user_menu(&props.active_path).to_owned()
                     + " flex flex-col items-end overflow-visible",
                 button {
-                    class: "px-4 py-1 align  rounded-lg text-sm outline-none",
+                    class: "px-4 align  rounded-lg text-sm outline-none",
                     onclick: move |_| {
                         let curr_val = show_dropdown();
                         *show_dropdown.write() = !curr_val;

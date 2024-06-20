@@ -5,7 +5,6 @@ use super::{auth::AuthMgr, AppError};
 
 #[cfg(feature = "server")]
 pub fn start(app_fn: fn() -> Element) {
-    use std::sync::Arc;
     use crate::server::{connect_to_pgdb, ServerState, UserAccount};
     use axum::{routing::*, Extension};
     use axum_session::{SessionConfig, SessionLayer};
@@ -13,11 +12,13 @@ pub fn start(app_fn: fn() -> Element) {
     use axum_session_sqlx::{SessionPgPool, SessionPgSessionStore};
     use dioxus::prelude::*;
     use sqlx::PgPool;
+    use std::sync::Arc;
 
     init_logging();
+    log::info!("Starting up the server ...");
 
     tokio::runtime::Runtime::new().unwrap().block_on(async move {
-        println!("Connecting to the database ...");
+        log::info!("Connecting to the database ...");
         let pg_pool = connect_to_pgdb().await;
         if pg_pool.is_err() {
             log::error!(
@@ -83,7 +84,10 @@ async fn register_admin_user(auth_mgr: &AuthMgr) -> Result<(), AppError> {
     {
         Ok(_) => Ok(()),
         Err(app_err) => match app_err {
-            AppError::AlreadyExists(_) => Ok(()),
+            AppError::AlreadyExists(_) => {
+                // It's fine if the admin user already exists.
+                Ok(())
+            }
             _ => Err(app_err),
         },
     }
