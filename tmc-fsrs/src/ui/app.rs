@@ -13,9 +13,12 @@ pub fn App() -> Element {
         let mut state = use_context::<Signal<State>>();
         let local_state = State::load_from_localstorage();
         *state.write() = local_state();
+        *APP_READY.write() = true;
     });
 
     rsx! {
         Router::<Route> {}
     }
 }
+
+pub static APP_READY: GlobalSignal<bool> = GlobalSignal::new(|| false);
