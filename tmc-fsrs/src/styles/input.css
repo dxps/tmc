@@ -10,4 +10,20 @@
 	a:hover {
 		@apply text-orange-600;
 	}
+
+	/** Defaults for input elements. */
+	input {
+		@apply border-[1.4px] border-slate-300 text-sm rounded-md py-2.5 px-3;
+	}
+	input:focus {
+		@apply border-green-400 outline-none;
+	}
+
+	/** Defaults for textarea elements. */
+	textarea {
+		@apply border-[1.4px] border-slate-300 text-sm rounded-md py-2.5 px-3;
+	}
+	textarea:focus {
+		@apply border-green-400 outline-none;
+	}
 }

@@ -15,7 +15,7 @@ pub async fn login(email: String, password: String) -> Result<UserAccount, Serve
     //
     let session: Session = extract().await?;
     let account = session.1.authenticate_user(email, password).await?;
-    session.login_user(account.id);
+    session.login_user(account.id.clone());
     debug!("[login] Logged-in user with account: {:?}", account);
     Ok(account)
 }
@@ -46,7 +46,7 @@ pub async fn get_permissions() -> Result<String, ServerFnError> {
     let current_user = session.current_user.clone().unwrap_or_default();
 
     // Let's check permissions only and not worry about if the user is anonymous or not.
-    if !axum_session_auth::Auth::<UserAccount, i64, sqlx::PgPool>::build([axum::http::Method::POST], false)
+    if !axum_session_auth::Auth::<UserAccount, String, sqlx::PgPool>::build([axum::http::Method::POST], false)
         .requires(Rights::any([
             Rights::permission("Category::View"),
             Rights::permission("Admin::View"),

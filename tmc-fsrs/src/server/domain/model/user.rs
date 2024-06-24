@@ -1,27 +1,32 @@
 use serde::{Deserialize, Serialize};
 
+use super::Attribute;
+
 /// User account contains most of the details of a user (except password related ones).
-#[derive(Debug, Clone, PartialEq,Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UserAccount {
-    pub id: i64,
+    pub id: String,
     pub email: String,
     pub username: String,
     pub bio: String,
     pub image: Option<String>,
-    pub anonymous: bool,
+    pub is_anonymous: bool,
     pub permissions: Vec<String>,
+    pub attributes: Vec<Attribute>,
 }
 
+#[cfg(feature = "server")]
 impl Default for UserAccount {
     fn default() -> Self {
         Self {
-            id: 1,
-            anonymous: true,
+            id: super::create_id(),
+            is_anonymous: true,
             username: "Guest".into(),
             email: "".into(),
             bio: "".into(),
             image: None,
             permissions: Vec::new(),
+            attributes: Vec::new(),
         }
     }
 }

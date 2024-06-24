@@ -32,7 +32,7 @@ pub fn start(app_fn: fn() -> Element) {
 
         // This defaults as normal cookies.
         let session_config = SessionConfig::default().with_table_name("users_sessions");
-        let auth_config = AuthConfig::<i64>::default().with_anonymous_user_id(Some(1));
+        let auth_config = AuthConfig::<String>::default().with_anonymous_user_id(Some("iH26rJ8Cp".to_string()));
         let session_store = SessionPgSessionStore::new(Some(pg_pool.clone().into()), session_config)
             .await
             .unwrap();
@@ -48,7 +48,7 @@ pub fn start(app_fn: fn() -> Element) {
             // Server side render the application, serve static assets, and register server functions.
             .serve_dioxus_application(ServeConfig::builder().build(), move || VirtualDom::new(app_fn))
             .await
-            .layer(AuthSessionLayer::<UserAccount, i64, SessionPgPool, PgPool>::new(Some(pg_pool)).with_config(auth_config))
+            .layer(AuthSessionLayer::<UserAccount, String, SessionPgPool, PgPool>::new(Some(pg_pool)).with_config(auth_config))
             .layer(SessionLayer::new(session_store))
             .layer(Extension(state));
 

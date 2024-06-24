@@ -13,11 +13,6 @@ pub fn style_nav_item_link(curr_path: &String, link_path: String) -> &'static st
 
 /// Navigation header specific function to highlight the user menu item based on the current path.
 pub fn style_nav_item_user_menu(curr_path: &String) -> &'static str {
-    log::debug!(
-        ">>> [style_nav_item_user_menu] curr_path: {:?} curr_path.find(\"/users\")={:?}",
-        curr_path,
-        curr_path.find("/users/")
-    );
     if curr_path.find("/users/") == Some(0) {
         "text-sm text-green-600 py-2 px-4 hover:bg-gray-50 rounded-lg transition duration-200"
     } else {
@@ -51,18 +46,16 @@ impl NavProps {
 
 pub fn render_go_to_login() -> Element {
     rsx! {
-        div {
-            class: "flex flex-col min-h-screen bg-gray-100",
-            Nav { active_path: NavProps::login() },
+        div { class: "flex flex-col min-h-screen bg-gray-100",
+            Nav { active_path: NavProps::login() }
             div { class: "flex flex-col min-h-screen justify-center items-center drop-shadow-2xl",
                 div { class: "bg-white rounded-md p-10",
-                    div {
-                        "You need to login to access this page."
-                    }
+                    div { "You need to login to access this page." }
                     div { class: "mt-6 text-center",
                         Link {
                             class: "text-sm text-gray-600 py-2 px-4 hover:bg-gray-50 rounded-lg transition duration-200",
-                            to: Route::Login {}, "Login",
+                            to: Route::Login {},
+                            "Login"
                         }
                     }
                 }

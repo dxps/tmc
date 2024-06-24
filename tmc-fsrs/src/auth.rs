@@ -5,12 +5,12 @@ use axum_session_sqlx::SessionPgPool;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-use crate::server::{ServerState, UserAccount, UsersRepo};
 use crate::server::auth::AuthMgr;
+use crate::server::{ServerState, UserAccount, UsersRepo};
 
 #[async_trait]
-impl Authentication<UserAccount, i64, PgPool> for UserAccount {
-    async fn load_user(user_id: i64, pool: Option<&PgPool>) -> Result<UserAccount, anyhow::Error> {
+impl Authentication<UserAccount, String, PgPool> for UserAccount {
+    async fn load_user(user_id: String, pool: Option<&PgPool>) -> Result<UserAccount, anyhow::Error> {
         let pool = pool.unwrap();
         UsersRepo::get_by_id(user_id, pool)
             .await
@@ -18,15 +18,15 @@ impl Authentication<UserAccount, i64, PgPool> for UserAccount {
     }
 
     fn is_authenticated(&self) -> bool {
-        !self.anonymous
+        !self.is_anonymous
     }
 
     fn is_active(&self) -> bool {
-        !self.anonymous
+        !self.is_anonymous
     }
 
     fn is_anonymous(&self) -> bool {
-        self.anonymous
+        self.is_anonymous
     }
 }
 
@@ -39,13 +39,13 @@ impl HasPermission<PgPool> for UserAccount {
 
 pub struct Session(
     /// auth session
-    pub AuthSession<UserAccount, i64, SessionPgPool, PgPool>,
+    pub AuthSession<UserAccount, String, SessionPgPool, PgPool>,
     /// auth manager
     pub Arc<AuthMgr>,
 );
 
 impl std::ops::Deref for Session {
-    type Target = AuthSession<UserAccount, i64, SessionPgPool, PgPool>;
+    type Target = AuthSession<UserAccount, String, SessionPgPool, PgPool>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -84,7 +84,7 @@ impl<S: Sync + Send> axum::extract::FromRequestParts<S> for Session {
     type Rejection = AuthSessionLayerNotFound;
 
     async fn from_request_parts(parts: &mut http::request::Parts, state: &S) -> Result<Self, Self::Rejection> {
-        AuthSession::<UserAccount, i64, SessionPgPool, PgPool>::from_request_parts(parts, state)
+        AuthSession::<UserAccount, String, SessionPgPool, PgPool>::from_request_parts(parts, state)
             .await
             .map(|auth_session| {
                 let ss = parts.extensions.get::<ServerState>().unwrap();

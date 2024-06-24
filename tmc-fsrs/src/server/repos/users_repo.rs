@@ -2,6 +2,7 @@ use sqlx::{postgres::PgRow, FromRow, PgPool, Row};
 use std::sync::Arc;
 
 use crate::server::{
+    create_id,
     domain::{UserAccount, UserEntry},
     AppError, AppUseCase,
 };
@@ -19,7 +20,7 @@ impl UsersRepo {
     pub async fn get_by_email(&self, email: &String, usecase: AppUseCase) -> Result<UserEntry, AppError> {
         //
         sqlx::query_as::<_, UserEntry>(
-            "SELECT id, email, username, password, salt, bio, image, anonymous FROM users_accounts 
+            "SELECT id, email, username, password, salt, bio, image, is_anonymous FROM users_accounts 
              WHERE email = $1",
         )
         .bind(email)
@@ -28,10 +29,10 @@ impl UsersRepo {
         .map_err(|err| AppError::from((err, usecase)))
     }
 
-    pub async fn get_by_id(id: i64, pool: &PgPool) -> Option<UserAccount> {
+    pub async fn get_by_id(id: String, pool: &PgPool) -> Option<UserAccount> {
         //
         let mut user_account = sqlx::query_as::<_, UserAccount>(
-            "SELECT id, email, username, bio, image, anyonymous FROM users_accounts WHERE id = $1",
+            "SELECT id, email, username, bio, image, is_anyonymous FROM users_accounts WHERE id = $1",
         )
         .bind(id)
         .fetch_one(pool)
@@ -48,12 +49,14 @@ impl UsersRepo {
         Some(user_account)
     }
 
-    pub async fn save(&self, email: String, username: String, pwd: String, salt: String) -> Result<i64, AppError> {
+    pub async fn save(&self, email: String, username: String, pwd: String, salt: String) -> Result<String, AppError> {
         //
+        let id = create_id();
         match sqlx::query(
-            "INSERT INTO users_accounts (email, username, password, salt) 
-             VALUES ($1, $2, $3, $4) RETURNING id",
+            "INSERT INTO users_accounts (id, email, username, password, salt) 
+             VALUES ($1, $2, $3, $4, $5)",
         )
+        .bind(&id)
         .bind(email)
         .bind(username)
         .bind(pwd)
@@ -61,7 +64,7 @@ impl UsersRepo {
         .fetch_one(self.dbcp.as_ref())
         .await
         {
-            Ok(row) => Ok(row.get("id")),
+            Ok(_) => Ok(id),
             Err(err) => Err(AppError::from((err, AppUseCase::UserRegistration))),
         }
     }
@@ -80,8 +83,9 @@ impl FromRow<'_, PgRow> for UserAccount {
             username: row.get("username"),
             bio: row.get("bio"),
             image: row.get("image"),
-            anonymous: row.get("anonymous"),
+            is_anonymous: row.get("is_anonymous"),
             permissions: Vec::new(),
+            attributes: Vec::new(),
         })
     }
 }
@@ -96,8 +100,9 @@ impl FromRow<'_, PgRow> for UserEntry {
                 username: row.get("username"),
                 bio: row.get("bio"),
                 image: row.try_get("image").unwrap_or_default(),
-                anonymous: row.get("anonymous"),
+                is_anonymous: row.get("is_anonymous"),
                 permissions: Vec::new(),
+                attributes: Vec::new(),
             },
             password: row.get("password"),
             salt: row.get("salt"),
