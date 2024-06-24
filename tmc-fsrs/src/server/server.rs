@@ -31,7 +31,7 @@ pub fn start(app_fn: fn() -> Element) {
         log::info!("Connected to the database.");
 
         // This defaults as normal cookies.
-        let session_config = SessionConfig::default().with_table_name("users_sessions");
+        let session_config = SessionConfig::default().with_table_name("user_sessions");
         let auth_config = AuthConfig::<String>::default().with_anonymous_user_id(Some("iH26rJ8Cp".to_string()));
         let session_store = SessionPgSessionStore::new(Some(pg_pool.clone().into()), session_config)
             .await
@@ -42,7 +42,6 @@ pub fn start(app_fn: fn() -> Element) {
         register_admin_user(&state.auth_mgr.as_ref())
             .await
             .expect("Self registering admin user failed");
-        log::debug!("Registered admin user.");
 
         let web_api_router = Router::new()
             // Server side render the application, serve static assets, and register server functions.
@@ -82,10 +81,13 @@ async fn register_admin_user(auth_mgr: &AuthMgr) -> Result<(), AppError> {
         .register_user("admin@tmc".into(), "admin".into(), "admin".into())
         .await
     {
-        Ok(_) => Ok(()),
+        Ok(_) => {
+            log::debug!("Registered admin user.");
+            Ok(())
+        }
         Err(app_err) => match app_err {
             AppError::AlreadyExists(_) => {
-                // It's fine if the admin user already exists.
+                log::debug!("Admin user is already registered.");
                 Ok(())
             }
             _ => Err(app_err),

@@ -9,4 +9,3 @@ CREATE TABLE attribute_definitions
     category_id     CHAR(10),
     CONSTRAINT category_fk FOREIGN KEY(category_id) REFERENCES attribute_categories(id)
 );
-

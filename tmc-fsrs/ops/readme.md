@@ -9,7 +9,7 @@ Use `./db_init.sh` to create and initialize (populating it with all the changes 
 Newer database changes introduced during development are applied as follows:
 
 1. Create the change using `./db_add_change.sh {change-name}`.<br/>
-   Ex: `./db_add_change.sh create_table_users_accounts`
+   Ex: `./db_add_change.sh create_table_user_accounts`
 
 2. Populate the generated file.<br/>
 

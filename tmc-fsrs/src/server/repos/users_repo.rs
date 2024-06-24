@@ -20,7 +20,7 @@ impl UsersRepo {
     pub async fn get_by_email(&self, email: &String, usecase: AppUseCase) -> Result<UserEntry, AppError> {
         //
         sqlx::query_as::<_, UserEntry>(
-            "SELECT id, email, username, password, salt, bio, image, is_anonymous FROM users_accounts 
+            "SELECT id, email, username, password, salt, bio, image, is_anonymous FROM user_accounts 
              WHERE email = $1",
         )
         .bind(email)
@@ -32,14 +32,14 @@ impl UsersRepo {
     pub async fn get_by_id(id: String, pool: &PgPool) -> Option<UserAccount> {
         //
         let mut user_account = sqlx::query_as::<_, UserAccount>(
-            "SELECT id, email, username, bio, image, is_anyonymous FROM users_accounts WHERE id = $1",
+            "SELECT id, email, username, bio, image, is_anyonymous FROM user_accounts WHERE id = $1",
         )
         .bind(id)
         .fetch_one(pool)
         .await
         .ok()?;
 
-        let mut permissions = sqlx::query("SELECT permission FROM users_permissions WHERE user_id = $1;")
+        let mut permissions = sqlx::query("SELECT permission FROM user_permissions WHERE user_id = $1;")
             .map(|r: PgRow| r.get("permission"))
             .fetch_all(pool)
             .await
@@ -53,7 +53,7 @@ impl UsersRepo {
         //
         let id = create_id();
         match sqlx::query(
-            "INSERT INTO users_accounts (id, email, username, password, salt) 
+            "INSERT INTO user_accounts (id, email, username, password, salt) 
              VALUES ($1, $2, $3, $4, $5)",
         )
         .bind(&id)
@@ -61,7 +61,7 @@ impl UsersRepo {
         .bind(username)
         .bind(pwd)
         .bind(salt)
-        .fetch_one(self.dbcp.as_ref())
+        .execute(self.dbcp.as_ref())
         .await
         {
             Ok(_) => Ok(id),
@@ -113,37 +113,43 @@ impl FromRow<'_, PgRow> for UserEntry {
 impl From<(sqlx::Error, AppUseCase)> for AppError {
     //
     fn from(ctx: (sqlx::Error, AppUseCase)) -> Self {
-        log::debug!("from((sqlx::Error, AppUseCase)): ctx={:?}", ctx);
-        let err = ctx.0;
+        //
+        let err = &ctx.0;
         // Start with the use case as the context, and then cover the possible errors within.
         match ctx.1 {
-            AppUseCase::UserRegistration => match &err.into_database_error() {
+            AppUseCase::UserRegistration => match &err.as_database_error() {
                 Some(e) => match e.code() {
                     Some(code) => match code.as_ref() {
                         "23505" => AppError::AlreadyExists("email".into()),
-                        _ => AppError::InternalErr,
+                        _ => log_and_return_internal_err(ctx),
                     },
-                    None => AppError::InternalErr,
+                    None => log_and_return_internal_err(ctx),
                 },
-                None => AppError::InternalErr,
+                None => log_and_return_internal_err(ctx),
             },
 
             AppUseCase::UserLogin => match &err {
                 sqlx::Error::RowNotFound => AppError::Unauthorized("wrong credentials".into()),
-                _ => AppError::InternalErr,
+                _ => log_and_return_internal_err(ctx),
             },
 
             AppUseCase::GetUserProfile => match &err {
                 sqlx::Error::RowNotFound => AppError::NotFound("profile".into()),
-                _ => AppError::InternalErr,
+                _ => log_and_return_internal_err(ctx),
             },
         }
     }
 }
 
+fn log_and_return_internal_err(ctx: (sqlx::Error, AppUseCase)) -> AppError {
+    log::debug!("InternalErr due to err={:?} on usecase:{:?}.", ctx.0, ctx.1);
+    AppError::InternalErr
+}
+
 impl From<sqlx::Error> for AppError {
     //
     fn from(err: sqlx::Error) -> Self {
+        //
         let mut app_err = AppError::Ignorable;
         log::debug!("from(sqlx:Error): err={:?}", err);
         if err.as_database_error().is_some() {
