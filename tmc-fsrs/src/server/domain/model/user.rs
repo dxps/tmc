@@ -1,9 +1,10 @@
+use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use super::Attribute;
 
 /// User account contains most of the details of a user (except password related ones).
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Props, Serialize, Deserialize)]
 pub struct UserAccount {
     pub id: String,
     pub email: String,

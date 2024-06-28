@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 
+use crate::server::fns::user_profile::save_user_profile_primary_info;
 use crate::server::UserAccount;
 use crate::ui::comps::{render_go_to_login, Nav, NavProps};
 use crate::ui::{State, APP_READY};
@@ -15,57 +16,98 @@ pub fn UserProfile(username: String) -> Element {
         log::debug!(">>> [UserProfile] There is no locally saved user.");
         render_go_to_login()
     } else {
-        render_user_profile_form(state().current_user.unwrap())
+        render_user_profile_page(username, state().current_user.unwrap())
     }
 }
 
-fn render_user_profile_form(ua: UserAccount) -> Element {
+fn render_user_profile_page(username: String, ua: UserAccount) -> Element {
+    //
+    log::debug!(">>> [render_user_profile_page] Username: {}, UserAccount: {:?}", username, ua);
+
     rsx! {
         div { class: "flex flex-col min-h-screen bg-gray-100",
             Nav { active_path: NavProps::users_section() }
             div { class: "flex flex-col min-h-screen justify-center items-center drop-shadow-2xl",
                 div { class: "bg-white rounded-md p-6 mt-24 mb-8",
-                    h1 { class: "text-3xl text-[#333] font-bold text-center", "User Profile" }
-                    div { class: "mt-8 space-y-6",
-                        div {
-                            label { class: "text-sm block mb-2", "Username" }
-                            input {
-                                class: "w-full",
-                                r#type: "text",
-                                placeholder: "Username",
-                                value: "{ua.username}",
-                                maxlength: 48
-                            }
-                        }
-                        div {
-                            label { class: "text-sm block mb-2", "Email" }
-                            input {
-                                class: "w-full rounded-md py-2.5",
-                                r#type: "text",
-                                placeholder: "Email",
-                                value: "{ua.email}",
-                                maxlength: 64
-                            }
-                        }
-                        div {
-                            label { class: "text-sm block mb-2", "Biography" }
-                            textarea {
-                                class: "w-full rounded-md py-2.5 px-4",
-                                cols: 64,
-                                rows: 8,
-                                placeholder: "Biography",
-                                value: "{ua.bio}",
-                                maxlength: 1024
-                            }
-                        }
-                        div { class: "text-center my-8",
-                            button {
-                                class: "bg-blue-50 hover:bg-blue-100 drop-shadow-sm px-4 py-2 rounded-md",
-                                onclick: move |_| { async move {} },
-                                "Save"
-                            }
+                    h1 { class: "text-3xl text-[#333] font-bold text-center",
+                        if username == ua.username {
+                            { "My Profile" }
+                        } else {
+                            { format!("{}'s Profile", username) }
                         }
                     }
+                    // The tabs.
+                    ul { class: "flex gap-4 bg-gray-100 rounded-xl my-4 p-[3.4px] w-max overflow-hidden font-sans mx-auto",
+                        li { class: "text-green-600 rounded-xl font-bold text-center text-sm bg-white py-2 px-6 tracking-wide cursor-pointer",
+                            "Primary Info"
+                        }
+                        li { class: "text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-6 tracking-wide cursor-pointer",
+                            "Security"
+                        }
+                    }
+                    PrimaryInfo { ua }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn PrimaryInfo(ua: UserAccount) -> Element {
+    //
+    let mut username = use_signal(|| ua.username.clone());
+    let mut email = use_signal(|| ua.email.clone());
+    let mut bio = use_signal(|| ua.bio.clone());
+
+    rsx! {
+        div { class: "mt-8 space-y-6",
+            div { class: "flex flex-row text-sm text-gray-500",
+                { "Id: " },
+                { ua.id }
+            }
+            div {
+                label { class: "text-sm block mb-2", "Username" }
+                input {
+                    class: "w-full",
+                    r#type: "text",
+                    placeholder: "Username",
+                    value: "{ua.username}",
+                    maxlength: 48,
+                    oninput: move |evt| { username.set(evt.value()) }
+                }
+            }
+            div {
+                label { class: "text-sm block mb-2", "Email" }
+                input {
+                    class: "w-full rounded-md py-2.5",
+                    r#type: "text",
+                    placeholder: "Email",
+                    value: "{ua.email}",
+                    maxlength: 64,
+                    oninput: move |evt| { email.set(evt.value()) }
+                }
+            }
+            div {
+                label { class: "text-sm block mb-2", "Biography" }
+                textarea {
+                    class: "w-full rounded-md py-2.5 px-4",
+                    cols: 64,
+                    rows: 6,
+                    placeholder: "Biography",
+                    value: "{ua.bio}",
+                    maxlength: 1024,
+                    oninput: move |evt| { bio.set(evt.value()) }
+                }
+            }
+            div { class: "text-center my-8",
+                button {
+                    class: "bg-blue-50 hover:bg-blue-100 drop-shadow-sm px-4 py-2 rounded-md",
+                    onclick: move |_| {
+                        async move {
+                            let _ = save_user_profile_primary_info(username(), email(), bio()).await;
+                        }
+                    },
+                    "Save"
                 }
             }
         }

@@ -3,11 +3,11 @@ use std::sync::Arc;
 use crate::server::{AppError, AppUseCase, UserAccount, UsersRepo};
 
 #[derive(Clone)]
-pub struct AuthMgr {
+pub struct UserMgmt {
     user_repo: Arc<UsersRepo>,
 }
 
-impl AuthMgr {
+impl UserMgmt {
     //
     pub fn new(user_repo: Arc<UsersRepo>) -> Self {
         Self { user_repo }

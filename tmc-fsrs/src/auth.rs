@@ -5,7 +5,7 @@ use axum_session_sqlx::SessionPgPool;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-use crate::server::auth::AuthMgr;
+use crate::server::user_mgmt::UserMgmt;
 use crate::server::{ServerState, UserAccount, UsersRepo};
 
 #[async_trait]
@@ -40,8 +40,8 @@ impl HasPermission<PgPool> for UserAccount {
 pub struct Session(
     /// auth session
     pub AuthSession<UserAccount, String, SessionPgPool, PgPool>,
-    /// auth manager
-    pub Arc<AuthMgr>,
+    /// user management
+    pub Arc<UserMgmt>,
 );
 
 impl std::ops::Deref for Session {
