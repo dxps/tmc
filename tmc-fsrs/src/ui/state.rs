@@ -21,7 +21,7 @@ impl State {
 
     pub fn save_to_localstorage(&self) {
         LocalStorage::set(Self::LS_KEY.into(), self);
-        log::debug!(">>> Saved to localstorage {:?}", self);
+        log::debug!(">>> [save_to_localstorage] Saved {:?}", self);
     }
 
     pub fn new(user: &UserAccount) -> Self {

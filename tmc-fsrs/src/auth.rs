@@ -63,7 +63,7 @@ pub struct AuthSessionLayerNotFound;
 
 impl std::fmt::Display for AuthSessionLayerNotFound {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "AuthSessionLayer was not found")
+        write!(f, "AuthSession layer was not found")
     }
 }
 
@@ -73,7 +73,7 @@ impl IntoResponse for AuthSessionLayerNotFound {
     fn into_response(self) -> Response {
         (
             http::status::StatusCode::INTERNAL_SERVER_ERROR,
-            "AuthSessionLayer was not found",
+            "AuthSession layer was not found",
         )
             .into_response()
     }

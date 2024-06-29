@@ -68,6 +68,22 @@ impl UsersRepo {
             Err(err) => Err(AppError::from((err, AppUseCase::UserRegistration))),
         }
     }
+
+    pub async fn update(&self, ua: UserAccount) -> Result<(), AppError> {
+        //
+        let id = create_id();
+        match sqlx::query("UPDATE user_accounts SET username=$1, email=$2, bio=$3 WHERE id = $4")
+            .bind(ua.username)
+            .bind(ua.email)
+            .bind(ua.bio)
+            .bind(ua.id)
+            .execute(self.dbcp.as_ref())
+            .await
+        {
+            Ok(_) => Ok(()),
+            Err(err) => Err(AppError::from(err)),
+        }
+    }
 }
 
 // -----------------------------------

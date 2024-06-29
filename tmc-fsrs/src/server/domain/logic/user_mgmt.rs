@@ -28,6 +28,11 @@ impl UserMgmt {
         }
     }
 
+    pub async fn update_user_account(&self, ua: UserAccount) -> Result<(), AppError> {
+        //
+        self.user_repo.update(ua).await
+    }
+
     fn generate_password(pwd: String) -> (String, String) {
         //
         let salt: String = std::iter::repeat_with(fastrand::alphanumeric).take(12).collect();

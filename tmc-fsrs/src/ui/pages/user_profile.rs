@@ -58,15 +58,17 @@ fn PrimaryInfo(ua: UserAccount) -> Element {
     let mut username = use_signal(|| ua.username.clone());
     let mut email = use_signal(|| ua.email.clone());
     let mut bio = use_signal(|| ua.bio.clone());
+    let mut err: Signal<Option<String>> = use_signal(|| None);
+    let mut saved = use_signal(|| false);
 
     rsx! {
         div { class: "mt-8 space-y-6",
             div { class: "flex flex-row text-sm text-gray-500",
                 { "Id: " },
-                { ua.id }
+                { ua.id.clone() }
             }
             div {
-                label { class: "text-sm block mb-2", "Username" }
+                label { class: "text-sm text-gray-500 block mb-2", "Username" }
                 input {
                     class: "w-full",
                     r#type: "text",
@@ -77,7 +79,7 @@ fn PrimaryInfo(ua: UserAccount) -> Element {
                 }
             }
             div {
-                label { class: "text-sm block mb-2", "Email" }
+                label { class: "text-sm text-gray-500 block mb-2", "Email" }
                 input {
                     class: "w-full rounded-md py-2.5",
                     r#type: "text",
@@ -88,9 +90,9 @@ fn PrimaryInfo(ua: UserAccount) -> Element {
                 }
             }
             div {
-                label { class: "text-sm block mb-2", "Biography" }
+                label { class: "text-sm text-gray-500 block mb-2", "Biography" }
                 textarea {
-                    class: "w-full rounded-md py-2.5 px-4",
+                    class: "w-full rounded-md py-2.5 px-3",
                     cols: 64,
                     rows: 6,
                     placeholder: "Biography",
@@ -101,13 +103,46 @@ fn PrimaryInfo(ua: UserAccount) -> Element {
             }
             div { class: "text-center my-8",
                 button {
-                    class: "bg-blue-50 hover:bg-blue-100 drop-shadow-sm px-4 py-2 rounded-md",
+                    class: "bg-green-50 hover:bg-green-200 drop-shadow-sm px-4 py-2 rounded-md",
                     onclick: move |_| {
+                        let mut ua = ua.clone();
                         async move {
-                            let _ = save_user_profile_primary_info(username(), email(), bio()).await;
+                            match save_user_profile_primary_info(
+                                    ua.id.clone(),
+                                    username(),
+                                    email(),
+                                    bio(),
+                                )
+                                .await
+                            {
+                                Ok(_) => {
+                                    err.set(None);
+                                    saved.set(true);
+                                    ua.username = username();
+                                    ua.email = email();
+                                    ua.bio = bio();
+                                    let new_state = State::new(&ua);
+                                    new_state.save_to_localstorage();
+                                    let mut state = use_context::<Signal<State>>();
+                                    state.write().clone_from(&new_state);
+                                }
+                                Err(e) => {
+                                    err.set(Some(e.to_string()));
+                                    saved.set(false);
+                                }
+                            }
                         }
                     },
                     "Save"
+                }
+            }
+            if err().is_some() {
+                div { class: "text-center text-red-600 my-8",
+                    span { {err().unwrap()} }
+                }
+            } else if saved() {
+                div { class: "text-center text-green-600 my-8",
+                    span { { "Successfully saved" } }
                 }
             }
         }
