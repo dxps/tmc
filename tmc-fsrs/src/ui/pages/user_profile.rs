@@ -23,6 +23,7 @@ pub fn UserProfile(username: String) -> Element {
 fn render_user_profile_page(username: String, ua: UserAccount) -> Element {
     //
     log::debug!(">>> [render_user_profile_page] Username: {}, UserAccount: {:?}", username, ua);
+    let mut tab_to_show = use_signal(|| "primary_info".to_string());
 
     rsx! {
         div { class: "flex flex-col min-h-screen bg-gray-100",
@@ -37,15 +38,23 @@ fn render_user_profile_page(username: String, ua: UserAccount) -> Element {
                         }
                     }
                     // The tabs.
-                    ul { class: "flex gap-4 bg-gray-100 rounded-xl my-4 p-[3.4px] w-max overflow-hidden font-sans mx-auto",
-                        li { class: "text-green-600 rounded-xl font-bold text-center text-sm bg-white py-2 px-6 tracking-wide cursor-pointer",
+                    ul { class: "flex gap-4 bg-gray-100 rounded-lg my-4 p-[3.4px] w-max overflow-hidden font-sans mx-auto",
+                        li {
+                            class: "text-green-600 rounded-lg font-semibold text-center text-sm bg-white py-2 px-4 tracking-wide cursor-pointer",
+                            onclick: move |_| tab_to_show.set("primary_info".to_string()),
                             "Primary Info"
                         }
-                        li { class: "text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-6 tracking-wide cursor-pointer",
+                        li {
+                            class: "text-gray-600 rounded-lg text-center text-sm hover:bg-white hover:text-lilac py-2 px-4 tracking-wide cursor-pointer",
+                            onclick: move |_| tab_to_show.set("security".to_string()),
                             "Security"
                         }
                     }
-                    PrimaryInfo { ua }
+                    if tab_to_show() == "primary_info".to_string() {
+                        PrimaryInfo { ua }
+                    } else if tab_to_show() == "security".to_string() {
+                        Security { ua }
+                    }
                 }
             }
         }
@@ -63,10 +72,6 @@ fn PrimaryInfo(ua: UserAccount) -> Element {
 
     rsx! {
         div { class: "mt-8 space-y-6",
-            div { class: "flex flex-row text-sm text-gray-500",
-                { "Id: " },
-                { ua.id.clone() }
-            }
             div {
                 label { class: "text-sm text-gray-500 block mb-2", "Username" }
                 input {
@@ -103,7 +108,7 @@ fn PrimaryInfo(ua: UserAccount) -> Element {
             }
             div { class: "text-center my-8",
                 button {
-                    class: "bg-green-50 hover:bg-green-200 drop-shadow-sm px-4 py-2 rounded-md",
+                    class: "bg-gray-100 hover:bg-green-100 drop-shadow-sm px-4 py-2 rounded-md",
                     onclick: move |_| {
                         let mut ua = ua.clone();
                         async move {
@@ -143,6 +148,44 @@ fn PrimaryInfo(ua: UserAccount) -> Element {
             } else if saved() {
                 div { class: "text-center text-green-600 my-8",
                     span { { "Successfully saved" } }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn Security(ua: UserAccount) -> Element {
+    //
+    let mut new_password = use_signal(|| String::new());
+    let mut confirm_password = use_signal(|| String::new());
+
+    rsx! {
+        div { class: "mt-8 space-y-6",
+            div { class: "flex flex-row text-sm text-gray-500",
+                { "Id: " },
+                { ua.id.clone() }
+            }
+            div {
+                label { class: "text-sm text-gray-500 block mb-2", "New password" }
+                input {
+                    class: "w-full",
+                    r#type: "password",
+                    placeholder: "Set a new password",
+                    value: "",
+                    maxlength: 48,
+                    oninput: move |evt| { new_password.set(evt.value()) }
+                }
+            }
+            div {
+                label { class: "text-sm text-gray-500 block mb-2", "New password" }
+                input {
+                    class: "w-full",
+                    r#type: "password",
+                    placeholder: "Set a new password",
+                    value: "",
+                    maxlength: 48,
+                    oninput: move |evt| { confirm_password.set(evt.value()) }
                 }
             }
         }

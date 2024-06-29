@@ -8,7 +8,7 @@
 		@apply text-green-600;
 	}
 	a:hover {
-		@apply text-orange-600;
+		@apply text-lilac;
 	}
 
 	/** Defaults for input elements. */
