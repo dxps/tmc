@@ -71,7 +71,6 @@ impl UsersRepo {
 
     pub async fn update(&self, ua: UserAccount) -> Result<(), AppError> {
         //
-        let id = create_id();
         match sqlx::query("UPDATE user_accounts SET username=$1, email=$2, bio=$3 WHERE id = $4")
             .bind(ua.username)
             .bind(ua.email)

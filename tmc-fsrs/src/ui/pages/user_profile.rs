@@ -126,10 +126,11 @@ fn PrimaryInfo(ua: UserAccount) -> Element {
                                     ua.username = username();
                                     ua.email = email();
                                     ua.bio = bio();
-                                    let new_state = State::new(&ua);
-                                    new_state.save_to_localstorage();
-                                    let mut state = use_context::<Signal<State>>();
-                                    state.write().clone_from(&new_state);
+                                    let mut state_sgnl = use_context::<Signal<State>>();
+                                    let mut state = state_sgnl();
+                                    state.current_user = Some(ua);
+                                    state.save_to_localstorage();
+                                    *state_sgnl.write() = state;
                                 }
                                 Err(e) => {
                                     err.set(Some(e.to_string()));

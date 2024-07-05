@@ -11,9 +11,10 @@ pub fn App() -> Element {
     // Asynchronously loading state from localstorage and notify its value through the signal.
     use_future(move || async move {
         let mut state = use_context::<Signal<State>>();
-        let local_state = State::load_from_localstorage();
-        *state.write() = local_state();
-        *APP_READY.write() = true;
+        if let Ok(local_state) = State::load_from_localstorage() {
+            *state.write() = local_state;
+            *APP_READY.write() = true;
+        }
     });
 
     rsx! {

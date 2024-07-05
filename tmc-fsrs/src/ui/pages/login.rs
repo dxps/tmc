@@ -16,22 +16,23 @@ pub fn Login() -> Element {
     let nav = use_navigator();
 
     rsx! {
-        div {
-            class: "flex flex-col min-h-screen bg-gray-100",
-            Nav { active_path: NavProps::login() },
+        div { class: "flex flex-col min-h-screen bg-gray-100",
+            Nav { active_path: NavProps::login() }
             div { class: "flex flex-col min-h-screen justify-center items-center drop-shadow-2xl",
                 div { class: "bg-white rounded-md p-6",
-                    div { class: "text-xl mb-6 px-2 text-center text-gray-600",
-                        "Login to your account"
-                    }
+                    div { class: "text-xl mb-6 px-2 text-center text-gray-600", "Login to your account" }
                     div { class: "mt-4 space-y-4",
                         div {
                             input {
                                 class: "px-3 py-3 rounded-lg outline-none border-2 focus:border-green-300",
-                                name: "email", r#type: "email", placeholder: "Email address",
+                                name: "email",
+                                r#type: "email",
+                                placeholder: "Email address",
                                 value: "{email}",
                                 autofocus: "true",
-                                oninput: move |evt| { email.set(evt.value()); },
+                                oninput: move |evt| {
+                                    email.set(evt.value());
+                                },
                                 onmounted: move |evt| async move {
                                     _ = evt.set_focus(true).await;
                                 }
@@ -40,9 +41,13 @@ pub fn Login() -> Element {
                         div {
                             input {
                                 class: "px-3 py-3 rounded-lg outline-none border-2 focus:border-green-300",
-                                name: "password", r#type: "password", placeholder: "Password",
+                                name: "password",
+                                r#type: "password",
+                                placeholder: "Password",
                                 value: "{password}",
-                                oninput: move |e| { password.set(e.value()); },
+                                oninput: move |e| {
+                                    password.set(e.value());
+                                },
                                 onkeypress: move |evt| {
                                     async move {
                                         if evt.key() == Key::Enter {
@@ -53,9 +58,7 @@ pub fn Login() -> Element {
                             }
                         }
                         div { class: "text-center text-red-600 my-8",
-                            span { class: if ! wrong_creds() { "hidden" },
-                                "Wrong credentials"
-                            }
+                            span { class: if !wrong_creds() { "hidden" }, "Wrong credentials" }
                         }
                         div { class: "text-center my-8",
                             button {
@@ -81,9 +84,10 @@ async fn handle_login(email: String, password: String, wrong_creds: &mut Signal<
     match login(format!("{}", email), format!("{}", password)).await {
         Ok(account) => {
             log::debug!(">>> [Login] Authenticated and got {:?}. Going to home.", account);
-            let state = State::new(&account);
-            state.save_to_localstorage();
             let mut state_sgnl = use_context::<Signal<State>>();
+            let mut state = state_sgnl();
+            state.current_user = Some(account);
+            state.save_to_localstorage();
             *state_sgnl.write() = state;
             nav.push(Route::Home {});
         }
