@@ -28,6 +28,18 @@ impl UserMgmt {
         }
     }
 
+    pub async fn update_password(&self, user_id: String, curr_password: String, new_password: String) -> Result<(), AppError> {
+        //
+        let ups = self.user_repo.get_password_by_id(&user_id).await?;
+        match Self::check_password(&curr_password, &ups.password, &ups.salt) {
+            true => {
+                let new_hash_pwd = Self::regenerate_password(new_password, ups.salt);
+                self.user_repo.update_password(user_id, new_hash_pwd).await
+            }
+            false => Err(AppError::Unauthorized("wrong password".into())),
+        }
+    }
+
     pub async fn update_user_account(&self, ua: UserAccount) -> Result<(), AppError> {
         //
         self.user_repo.update(ua).await
@@ -38,6 +50,12 @@ impl UserMgmt {
         let salt: String = std::iter::repeat_with(fastrand::alphanumeric).take(12).collect();
         let digest = md5::compute(format!("@{salt}${pwd}").as_bytes());
         (format!("{:x}", digest), salt)
+    }
+
+    fn regenerate_password(pwd: String, salt: String) -> String {
+        //
+        let digest = md5::compute(format!("@{salt}${pwd}").as_bytes());
+        format!("{:x}", digest)
     }
 
     fn check_password(input_pwd: &str, pwd: &str, salt: &str) -> bool {

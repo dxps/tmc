@@ -754,8 +754,16 @@ textarea:focus {
   width: max-content;
 }
 
+.w-\[500px\] {
+  width: 500px;
+}
+
 .min-w-full {
   min-width: 100%;
+}
+
+.min-w-\[600px\] {
+  min-width: 600px;
 }
 
 .-translate-x-1\/2 {

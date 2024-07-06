@@ -4,7 +4,7 @@ use std::sync::Arc;
 use crate::server::{
     create_id,
     domain::{UserAccount, UserEntry},
-    AppError, AppUseCase,
+    AppError, AppUseCase, UserPasswordSalt,
 };
 
 pub struct UsersRepo {
@@ -47,6 +47,29 @@ impl UsersRepo {
 
         user_account.permissions.append(&mut permissions);
         Some(user_account)
+    }
+
+    pub async fn get_password_by_id(&self, user_id: &String) -> Result<UserPasswordSalt, AppError> {
+        //
+        sqlx::query_as::<_, UserPasswordSalt>("SELECT password, salt FROM user_accounts WHERE id = $1")
+            .bind(user_id)
+            .fetch_one(self.dbcp.as_ref())
+            .await
+            .map_err(|err| AppError::from(err))
+    }
+
+    pub async fn update_password(&self, user_id: String, pwd: String) -> Result<(), AppError> {
+        //
+        match sqlx::query("UPDATE user_accounts SET password = $1 WHERE id = $2")
+            .bind(pwd)
+            .bind(user_id)
+            .execute(self.dbcp.as_ref())
+            .await
+            .map_err(|err| AppError::from(err))
+        {
+            Ok(_) => Ok(()),
+            Err(err) => Err(AppError::from(err)),
+        }
     }
 
     pub async fn save(&self, email: String, username: String, pwd: String, salt: String) -> Result<String, AppError> {
@@ -119,6 +142,16 @@ impl FromRow<'_, PgRow> for UserEntry {
                 permissions: Vec::new(),
                 attributes: Vec::new(),
             },
+            password: row.get("password"),
+            salt: row.get("salt"),
+        })
+    }
+}
+
+impl FromRow<'_, PgRow> for UserPasswordSalt {
+    //
+    fn from_row(row: &PgRow) -> Result<Self, sqlx::Error> {
+        Ok(Self {
             password: row.get("password"),
             salt: row.get("salt"),
         })
