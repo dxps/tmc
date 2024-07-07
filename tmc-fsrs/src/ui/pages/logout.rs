@@ -8,7 +8,6 @@ use crate::ui::{
 #[component]
 pub fn Logout() -> Element {
     //
-
     use_future(move || async move {
         handle_logout().await;
     });
@@ -34,7 +33,7 @@ async fn handle_logout() {
 
     log::debug!(">>> Handling the logout ...");
     logout().await.unwrap(); // TODO: Handle this if it fails.
-    let state = State::default();
+    let mut state = State::new().unwrap();
     state.save_to_localstorage();
     let mut state_sgnl = use_context::<Signal<State>>();
     *state_sgnl.write() = state;

@@ -12,11 +12,11 @@ pub struct State {
 }
 
 impl State {
-    /// LocalStorage key.
+    /// Browser's localstorage key.
     const LS_KEY: &'static str = "tmc";
 
-    fn new() -> Result<Self, String> {
-        let window = web_sys::window().expect("no global `window` exists");
+    pub fn new() -> Result<Self, String> {
+        let window = web_sys::window().expect("No global `window` exists!");
         if let Ok(Some(storage)) = window.local_storage() {
             let state = State {
                 current_user: None,
@@ -24,8 +24,8 @@ impl State {
             };
             Ok(state)
         } else {
-            debug!(">>> [State::new] Error: No local storage found!");
-            Err("No local storage found".into())
+            debug!(">>> [State::new] Error: No browser's localstorage found!");
+            Err("No localstorage found".into())
         }
     }
 
@@ -40,18 +40,32 @@ impl State {
         Ok(state)
     }
 
-    pub fn save_to_localstorage(&self) {
+    pub fn save_to_localstorage(&mut self) {
         //
         if self.current_user.is_some() {
+            if self.localstorage.is_none() {
+                self.init_localstorage().unwrap();
+            }
             self.localstorage
                 .as_ref()
                 .unwrap()
                 .set_item(Self::LS_KEY, &serde_json::to_string(&self.current_user).unwrap())
                 .unwrap();
-            debug!(">>> [save_to_localstorage] Saved {:?}", self.current_user);
+            debug!(">>> [save_to_localstorage] Saved {:?} to localstorage.", self.current_user);
         } else {
             self.localstorage.as_ref().unwrap().remove_item(Self::LS_KEY).unwrap();
             debug!(">>> [save_to_localstorage] Removed {:?} key from localstorage.", Self::LS_KEY);
+        }
+    }
+
+    fn init_localstorage(&mut self) -> Result<(), String> {
+        let window = web_sys::window().expect("No global `window` exists!");
+        if let Ok(Some(storage)) = window.local_storage() {
+            self.localstorage = Some(storage);
+            Ok(())
+        } else {
+            debug!(">>> [State::new] Error: No browser's localstorage found!");
+            Err("No localstorage found".into())
         }
     }
 }
