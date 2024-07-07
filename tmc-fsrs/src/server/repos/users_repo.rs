@@ -4,7 +4,7 @@ use std::sync::Arc;
 use crate::server::{
     create_id,
     domain::{UserAccount, UserEntry},
-    AppError, AppUseCase, UserPasswordSalt,
+    AppError, AppResult, AppUseCase, UserPasswordSalt,
 };
 
 pub struct UsersRepo {
@@ -17,7 +17,7 @@ impl UsersRepo {
         Self { dbcp }
     }
 
-    pub async fn get_by_email(&self, email: &String, usecase: AppUseCase) -> Result<UserEntry, AppError> {
+    pub async fn get_by_email(&self, email: &String, usecase: AppUseCase) -> AppResult<UserEntry> {
         //
         sqlx::query_as::<_, UserEntry>(
             "SELECT id, email, username, password, salt, bio, image, is_anonymous FROM user_accounts 
@@ -49,7 +49,7 @@ impl UsersRepo {
         Some(user_account)
     }
 
-    pub async fn get_password_by_id(&self, user_id: &String) -> Result<UserPasswordSalt, AppError> {
+    pub async fn get_password_by_id(&self, user_id: &String) -> AppResult<UserPasswordSalt> {
         //
         sqlx::query_as::<_, UserPasswordSalt>("SELECT password, salt FROM user_accounts WHERE id = $1")
             .bind(user_id)
@@ -58,7 +58,7 @@ impl UsersRepo {
             .map_err(|err| AppError::from(err))
     }
 
-    pub async fn update_password(&self, user_id: String, pwd: String) -> Result<(), AppError> {
+    pub async fn update_password(&self, user_id: String, pwd: String) -> AppResult<()> {
         //
         match sqlx::query("UPDATE user_accounts SET password = $1 WHERE id = $2")
             .bind(pwd)
@@ -72,7 +72,7 @@ impl UsersRepo {
         }
     }
 
-    pub async fn save(&self, email: String, username: String, pwd: String, salt: String) -> Result<String, AppError> {
+    pub async fn save(&self, email: String, username: String, pwd: String, salt: String) -> AppResult<String> {
         //
         let id = create_id();
         match sqlx::query(
@@ -92,7 +92,7 @@ impl UsersRepo {
         }
     }
 
-    pub async fn update(&self, ua: UserAccount) -> Result<(), AppError> {
+    pub async fn update(&self, ua: UserAccount) -> AppResult<()> {
         //
         match sqlx::query("UPDATE user_accounts SET username=$1, email=$2, bio=$3 WHERE id = $4")
             .bind(ua.username)
@@ -180,11 +180,6 @@ impl From<(sqlx::Error, AppUseCase)> for AppError {
                 sqlx::Error::RowNotFound => AppError::Unauthorized("wrong credentials".into()),
                 _ => log_and_return_internal_err(ctx),
             },
-
-            AppUseCase::GetUserProfile => match &err {
-                sqlx::Error::RowNotFound => AppError::NotFound("profile".into()),
-                _ => log_and_return_internal_err(ctx),
-            },
         }
     }
 }
@@ -201,7 +196,7 @@ impl From<sqlx::Error> for AppError {
         let mut app_err = AppError::Ignorable;
         log::debug!("from(sqlx:Error): err={:?}", err);
         if err.as_database_error().is_some() {
-            // TODO: For now, any db error is classified as internal error.
+            // TODO: For now, any db error is considered as internal error.
             app_err = AppError::InternalErr
         }
         app_err

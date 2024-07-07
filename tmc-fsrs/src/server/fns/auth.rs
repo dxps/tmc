@@ -9,7 +9,7 @@ use log::debug;
 use dioxus_fullstack::prelude::*;
 
 // TODO: Use a proper result type, instead of `ServerFnError`.
-// pub type LoginResult = Result<UserAccount, AppError>;
+// pub type LoginResult = AppResult<UserAccount>;
 
 #[server(Login)]
 pub async fn login(email: String, password: String) -> Result<UserAccount, ServerFnError> {

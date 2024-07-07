@@ -80,11 +80,11 @@ pub fn Login() -> Element {
 
 async fn handle_login(email: String, password: String, wrong_creds: &mut Signal<bool>, nav: &Navigator) {
     use crate::ui::State;
+    let mut state_sgnl = use_context::<Signal<State>>();
 
     match login(format!("{}", email), format!("{}", password)).await {
         Ok(account) => {
-            log::debug!(">>> [Login] Authenticated and got {:?}. Going to home.", account);
-            let mut state_sgnl = use_context::<Signal<State>>();
+            log::debug!(">>> [handle_login] Authenticated and got {:?}. Going to home ...", account);
             let mut state = state_sgnl();
             state.current_user = Some(account);
             state.save_to_localstorage();
@@ -92,7 +92,7 @@ async fn handle_login(email: String, password: String, wrong_creds: &mut Signal<
             nav.push(Route::Home {});
         }
         Err(e) => {
-            log::debug!(">>> [Login] Authentication failed. Error: {}", e);
+            log::debug!(">>> [handle_login] Authentication failed. Error: {}", e);
             if e.to_string().contains("wrong credentials") {
                 wrong_creds.set(true);
             }

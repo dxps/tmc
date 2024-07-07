@@ -46,7 +46,6 @@ impl From<UserEntry> for UserAccount {
     }
 }
 
-#[derive(Debug)]
 /// It includes just the user's password and salt.
 pub struct UserPasswordSalt {
     pub password: String,

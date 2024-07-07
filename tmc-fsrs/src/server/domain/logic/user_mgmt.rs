@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::server::{AppError, AppUseCase, UserAccount, UsersRepo};
+use crate::server::{AppError, AppResult, AppUseCase, UserAccount, UsersRepo};
 
 #[derive(Clone)]
 pub struct UserMgmt {
@@ -13,13 +13,13 @@ impl UserMgmt {
         Self { user_repo }
     }
 
-    pub async fn register_user(&self, email: String, username: String, pwd: String) -> Result<String, AppError> {
+    pub async fn register_user(&self, email: String, username: String, pwd: String) -> AppResult<String> {
         //
         let (pwd, salt) = Self::generate_password(pwd);
         self.user_repo.save(email, username, pwd, salt).await
     }
 
-    pub async fn authenticate_user(&self, email: String, pwd: String) -> Result<UserAccount, AppError> {
+    pub async fn authenticate_user(&self, email: String, pwd: String) -> AppResult<UserAccount> {
         //
         let user_entry = self.user_repo.get_by_email(&email, AppUseCase::UserLogin).await?;
         match Self::check_password(&pwd, &user_entry.password, &user_entry.salt) {
@@ -28,7 +28,7 @@ impl UserMgmt {
         }
     }
 
-    pub async fn update_password(&self, user_id: String, curr_password: String, new_password: String) -> Result<(), AppError> {
+    pub async fn update_password(&self, user_id: String, curr_password: String, new_password: String) -> AppResult<()> {
         //
         let ups = self.user_repo.get_password_by_id(&user_id).await?;
         match Self::check_password(&curr_password, &ups.password, &ups.salt) {
@@ -40,7 +40,7 @@ impl UserMgmt {
         }
     }
 
-    pub async fn update_user_account(&self, ua: UserAccount) -> Result<(), AppError> {
+    pub async fn update_user_account(&self, ua: UserAccount) -> AppResult<()> {
         //
         self.user_repo.update(ua).await
     }

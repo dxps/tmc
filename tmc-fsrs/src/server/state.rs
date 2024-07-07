@@ -15,19 +15,14 @@ use super::{user_mgmt::UserMgmt, UsersRepo};
 #[cfg(feature = "server")]
 #[derive(Clone)]
 pub struct ServerState {
-    pub users_repo: Arc<UsersRepo>,
     pub auth_mgr: Arc<UserMgmt>,
-    pub db_pool: Arc<PgPool>,
 }
 
 impl ServerState {
     pub fn new(db_pool: Arc<PgPool>) -> Self {
         let users_repo = Arc::new(UsersRepo::new(db_pool.clone()));
-        Self {
-            users_repo: users_repo.clone(),
-            auth_mgr: Arc::new(UserMgmt::new(users_repo)),
-            db_pool,
-        }
+        let auth_mgr = Arc::new(UserMgmt::new(users_repo));
+        Self { auth_mgr }
     }
 }
 

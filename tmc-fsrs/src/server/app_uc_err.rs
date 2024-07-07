@@ -13,7 +13,6 @@ use thiserror::Error;
 pub enum AppUseCase {
     UserRegistration,
     UserLogin,
-    GetUserProfile,
 }
 
 pub type AppResult<T> = std::result::Result<T, AppError>;
@@ -30,12 +29,20 @@ pub enum AppError {
     #[error("internal error")]
     InternalErr,
 
-    // #[error("invalid request: {0}")]
-    // InvalidRequest(String),
-    //
-    #[error("{0} not found")]
-    NotFound(String),
+    #[error("{0}")]
+    Err(String),
 
     #[error("unauthorized: {0}")]
     Unauthorized(String),
+    // #[error("invalid request: {0}")]
+    // InvalidRequest(String),
+    //
+    // #[error("{0} not found")]
+    // NotFound(String),
+}
+
+impl From<&str> for AppError {
+    fn from(s: &str) -> Self {
+        Self::Err(s.to_string())
+    }
 }

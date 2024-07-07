@@ -1,7 +1,7 @@
 #[cfg(feature = "server")]
 use dioxus::dioxus_core::Element;
 
-use super::{user_mgmt::UserMgmt, AppError};
+use super::{user_mgmt::UserMgmt, AppError, AppResult};
 
 #[cfg(feature = "server")]
 pub fn start(app_fn: fn() -> Element) {
@@ -76,7 +76,7 @@ fn init_logging() {
         .unwrap();
 }
 
-async fn register_admin_user(auth_mgr: &UserMgmt) -> Result<(), AppError> {
+async fn register_admin_user(auth_mgr: &UserMgmt) -> AppResult<()> {
     match auth_mgr
         .register_user("admin@tmc".into(), "admin".into(), "admin".into())
         .await
