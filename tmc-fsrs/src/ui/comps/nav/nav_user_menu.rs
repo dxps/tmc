@@ -65,15 +65,12 @@ fn NavUserDropdown(mut props: NavUserDropdownProps) -> Element {
             // "style": "width: 100%; height: 1000%; padding: 0; position: absolute; top: 0; left: 0; z-index: 40",
             "style": "width: 100%; height: 1000%; padding: 0; position: absolute; top: 0; left: 0",
             onclick: move |_| {
-                log::debug!(">>> [NavUserDropdown] Clicked in the outer div!");
+                log::debug!(">>> [NavUserDropdown] Clicked in the outer div.");
                 *props.show_dropdown.write() = false;
             },
-            div { class: "w-20 mt-14 mr-28 bg-white rounded-lg shadow-2xl float-right",
+            div { class: "w-20 mt-14 mr-16 bg-white rounded-lg shadow-2xl float-right",
                 div {
-                    ul { class: "shadow-lg bg-white py-2 z-[1000] min-w-full w-max rounded-lg max-h-96 overflow-auto",
-                        li { class: "py-2.5 px-12 flex items-center text-[#888] text-sm",
-                            "{props.username} user menu"
-                        }
+                    ul { class: "shadow-2xl bg-white py-2 z-[1000] min-w-full w-max rounded-lg max-h-96 overflow-auto",
                         li { class: "flex items-center text-[#333] hover:bg-gray-100 hover:text-orange-600 text-sm cursor-pointer",
                             Link {
                                 class: "py-2.5 px-5 min-w-full w-max min-h-full flex text-[#333]",
@@ -83,6 +80,9 @@ fn NavUserDropdown(mut props: NavUserDropdownProps) -> Element {
                                 div { dangerous_inner_html: user_icon() }
                                 "My profile"
                             }
+                        }
+                        li { class: "px-4 py-2",
+                            hr {}
                         }
                         li { class: "flex items-center text-[#333] hover:bg-gray-100 hover:text-orange-600 text-sm cursor-pointer",
                             Link {
