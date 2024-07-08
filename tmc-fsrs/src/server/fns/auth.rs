@@ -66,3 +66,22 @@ pub async fn get_permissions() -> Result<String, ServerFnError> {
         current_user.username, current_user.permissions
     ))
 }
+
+#[server(HasAdminPermissions)]
+pub async fn has_admin_permissions() -> Result<bool, ServerFnError> {
+    use axum_session_auth::Rights;
+
+    let method: axum::http::Method = extract().await?;
+    let session: Session = extract().await?;
+    let current_user = session.current_user.clone().unwrap_or_default();
+
+    // Let's check permissions only and not worry about if the user is anonymous or not.
+    let res = !axum_session_auth::Auth::<UserAccount, String, sqlx::PgPool>::build([axum::http::Method::POST], false)
+        .requires(Rights::any([
+            Rights::permission("Admin::Read"),
+            Rights::permission("Admin::Write"),
+        ]))
+        .validate(&current_user, &method, None)
+        .await;
+    Ok(res)
+}

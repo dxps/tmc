@@ -1,6 +1,5 @@
-pub use app::*;
-
 mod app;
+pub use app::*;
 
 pub mod comps;
 pub mod pages;

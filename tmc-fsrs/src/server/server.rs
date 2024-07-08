@@ -78,7 +78,7 @@ fn init_logging() {
 
 async fn register_admin_user(auth_mgr: &UserMgmt) -> AppResult<()> {
     match auth_mgr
-        .register_user("admin@tmc".into(), "admin".into(), "admin".into())
+        .register_admin_user("admin@tmc".into(), "admin".into(), "admin".into())
         .await
     {
         Ok(_) => {

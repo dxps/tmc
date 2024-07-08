@@ -15,3 +15,6 @@ pub use logout::*;
 
 mod user_profile;
 pub use user_profile::*;
+
+mod admin_area;
+pub use admin_area::*;

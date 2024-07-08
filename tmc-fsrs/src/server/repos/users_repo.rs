@@ -92,6 +92,49 @@ impl UsersRepo {
         }
     }
 
+    pub async fn save_with_permissions(
+        &self,
+        email: String,
+        username: String,
+        pwd: String,
+        salt: String,
+        permissions: Vec<String>,
+    ) -> AppResult<String> {
+        //
+        let id = create_id();
+        let account_res = match sqlx::query(
+            "INSERT INTO user_accounts (id, email, username, password, salt) 
+             VALUES ($1, $2, $3, $4, $5)",
+        )
+        .bind(&id)
+        .bind(email)
+        .bind(username)
+        .bind(pwd)
+        .bind(salt)
+        .execute(self.dbcp.as_ref())
+        .await
+        {
+            Ok(_) => Ok(&id),
+            Err(err) => Err(AppError::from((err, AppUseCase::UserRegistration))),
+        };
+        if account_res.is_ok() {
+            for permission in permissions.iter() {
+                match sqlx::query("INSERT INTO user_permissions (user_id, permission) VALUES ($1, $2)")
+                    .bind(&id)
+                    .bind(permission)
+                    .execute(self.dbcp.as_ref())
+                    .await
+                {
+                    Ok(_) => {}
+                    Err(err) => {
+                        return Err(AppError::from((err, AppUseCase::UserRegistration)));
+                    }
+                }
+            }
+        }
+        AppResult::Ok(id)
+    }
+
     pub async fn update(&self, ua: UserAccount) -> AppResult<()> {
         //
         match sqlx::query("UPDATE user_accounts SET username=$1, email=$2, bio=$3 WHERE id = $4")
