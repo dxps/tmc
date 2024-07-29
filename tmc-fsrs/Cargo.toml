@@ -8,15 +8,15 @@ edition = "2021"
 
 [dependencies]
 
-# dioxus = { version = "0.5", features = ["fullstack", "router"] }
+dioxus = { version = "0.5.6", features = ["fullstack", "router"] }
 # Using the git version of 0.5 that solves the issue #2343.
-dioxus = { git = "https://github.com/DioxusLabs/dioxus", branch = "v0.5", features = ["fullstack", "router"] }
+# dioxus = { git = "https://github.com/DioxusLabs/dioxus", branch = "v0.5", features = ["fullstack", "router"] }
 
-# dioxus-web = { version = "0.5.1", features = ["hydrate"], optional = true }
-dioxus-web = { git = "https://github.com/DioxusLabs/dioxus", branch = "v0.5", features = ["hydrate"], optional = true }
+dioxus-web = { version = "0.5.6", features = ["hydrate"], optional = true }
+# dioxus-web = { git = "https://github.com/DioxusLabs/dioxus", branch = "v0.5", features = ["hydrate"], optional = true }
 
-# dioxus-fullstack = { version = "0.5.2" }
-dioxus-fullstack = { git = "https://github.com/DioxusLabs/dioxus", branch = "v0.5" }
+dioxus-fullstack = { version = "0.5.6" }
+# dioxus-fullstack = { git = "https://github.com/DioxusLabs/dioxus", branch = "v0.5" }
 
 # Not used due to Signal declarations conflicts.
 # dioxus-sdk = { version = "0.5.0", features = ["storage"] }
